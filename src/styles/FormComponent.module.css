@@ -1,0 +1,40 @@
+.wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  position: absolute;
+}
+
+.component {
+  border: 1px solid transparent;
+  padding: 5px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.selected {
+  border: 2px dashed red;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+}
+
+.inputField {
+  flex: 1;
+  height: 100%;
+}
+
+.deleteIcon {
+  cursor: pointer;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  border: 1px solid #ccc;
+  align-self: start;
+}

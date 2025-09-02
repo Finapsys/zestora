@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  height: 100%; /* now it fills the full height from html/body */
+  width: 100%;
+  overflow: hidden;
+}
+
+.sidebarLeft {
+  width: 250px;
+  border-right: 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+}
+
+.sidebarRight {
+  width: 250px;
+  border-left: 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+}
+
+.canvas {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: #fafafa;
+  overflow: auto;
+  padding: 10px; 
+}
+

@@ -72,6 +72,7 @@ const Home: React.FC = () => {
           onSelect={handleSelect}
           onDelete={deleteComponent}
           onUpdate={updateComponent}
+          onDeselect={() => setSelectedId(null)}
         />
       </div>
 

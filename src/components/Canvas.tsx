@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import FormComponent, { FormComponentProps } from "./FormComponent";
 import styles from "../styles/Canvas.module.css";
 
@@ -7,6 +7,7 @@ interface CanvasProps {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
+  onDeselect?: () => void;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -14,9 +15,18 @@ const Canvas: React.FC<CanvasProps> = ({
   onSelect,
   onDelete,
   onUpdate,
+  onDeselect,
 }) => {
+  const canvasRef = useRef<HTMLDivElement>(null);
+
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === canvasRef.current) {
+      onDeselect?.();
+    }
+  };
+
   return (
-    <div className={styles.canvas}>
+    <div ref={canvasRef} className={styles.canvas} onClick={handleCanvasClick}>
       {components.map((comp) => (
         <FormComponent
           key={comp.id}

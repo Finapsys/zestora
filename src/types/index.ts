@@ -1,20 +1,20 @@
 interface BaseComponent {
   id: string;
+  x: number;
+  y: number;
   width: number;
-}
-
-export interface DragItem {
-  type: "Input";
-  width: number;
+  height: number;
+  selected: boolean;
 }
 
 export interface InputComponent extends BaseComponent {
-  type: "Input";
-  properties: {
-    placeholder: string;
-    label: string;
-    required: boolean;
-  };
+  type: "text";
+  placeholder: string;
 }
 
-export type FormComponentType = InputComponent;
+export interface LabelComponent extends BaseComponent {
+  type: "label";
+  labelText: string;
+}
+
+export type FormComponentType = InputComponent | LabelComponent;

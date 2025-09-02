@@ -1,22 +1,24 @@
 import React, { useRef } from "react";
 import { ResizableBox } from "react-resizable";
-import Draggable from "react-draggable";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { AiOutlineDelete } from "react-icons/ai";
 import styles from "../styles/FormComponent.module.css";
 
 export interface FormComponentProps {
   id: string;
-  type: "text";
+  type: "text" | "label";
   x: number;
   y: number;
   width: number;
   height: number;
   selected: boolean;
   placeholder?: string;
+  labelText?: string;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
 }
+
 
 const FormComponent: React.FC<FormComponentProps> = ({
   id,
@@ -25,7 +27,9 @@ const FormComponent: React.FC<FormComponentProps> = ({
   width,
   height,
   selected,
+  type,
   placeholder,
+  labelText,
   onSelect,
   onDelete,
   onUpdate,
@@ -36,7 +40,9 @@ const FormComponent: React.FC<FormComponentProps> = ({
     <Draggable
       nodeRef={nodeRef}
       position={{ x, y }}
-      onStop={(_e, data) => onUpdate(id, { x: data.x, y: data.y })}
+      onStop={(_e: DraggableEvent, data: DraggableData) =>
+        onUpdate(id, { x: data.x, y: data.y })
+      }
       onStart={() => onSelect(id)}
     >
       <div ref={nodeRef} className={styles.wrapper}>
@@ -50,14 +56,18 @@ const FormComponent: React.FC<FormComponentProps> = ({
           <div
             className={`${styles.component} ${
               selected ? styles.selected : ""
-            } ${styles.inputWrapper}`}
+            } ${type === "label" ? styles.labelWrapper : styles.inputWrapper}`}
             onClick={() => onSelect(id)}
           >
-            <input
-              type="text"
-              placeholder={placeholder || "Text Input"}
-              className={styles.inputField}
-            />
+            {type === "text" ? (
+              <input
+                type="text"
+                placeholder={placeholder || "Text Input"}
+                className={styles.inputField}
+              />
+            ) : (
+              <span className={styles.labelText}>{labelText || "Label"}</span>
+            )}
           </div>
         </ResizableBox>
 

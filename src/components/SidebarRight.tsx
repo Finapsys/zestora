@@ -17,16 +17,35 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
   return (
     <div className={styles.sidebar}>
       <h3>Properties</h3>
-      <label>
-        Placeholder:
-        <input
-          type="text"
-          value={selectedComponent.placeholder || ""}
-          onChange={(e) =>
-            onUpdate(selectedComponent.id, { placeholder: e.target.value })
-          }
-        />
-      </label>
+      {selectedComponent.type === "text" && (
+        <label>
+          Placeholder:
+          <input
+            type="text"
+            value={selectedComponent.placeholder || ""}
+            onChange={(e) =>
+              onUpdate(selectedComponent.id, {
+                placeholder: e.target.value,
+              })
+            }
+          />
+        </label>
+      )}
+
+      {selectedComponent.type === "label" && (
+        <label>
+          Label Text:
+          <input
+            type="text"
+            value={selectedComponent.labelText || ""}
+            onChange={(e) =>
+              onUpdate(selectedComponent.id, {
+                labelText: e.target.value,
+              })
+            }
+          />
+        </label>
+      )}
     </div>
   );
 };

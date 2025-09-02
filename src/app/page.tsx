@@ -10,18 +10,23 @@ const Home: React.FC = () => {
   const [components, setComponents] = useState<FormComponentProps[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const addComponent = (type: "text") => {
+  const addComponent = (type: "text" | "label") => {
     const id = `comp-${Date.now()}`;
+    const offset = 10;
+    const verticalSpacing = 60;
+
     setComponents([
       ...components,
       {
         id,
         type,
-        x: 10,
-        y: 10,
-        width: 200,
+        x: offset,
+        y: offset + components.length * verticalSpacing,
+        width: type === "text" ? 200 : 150,
         height: 50,
         selected: false,
+        placeholder: "",
+        labelText: "",
         onSelect: () => {},
         onDelete: () => {},
         onUpdate: () => {},
@@ -48,9 +53,7 @@ const Home: React.FC = () => {
     if (selectedId === id) setSelectedId(null);
   };
 
-  const handleSelect = (id: string) => {
-    setSelectedId(id);
-  };
+  const handleSelect = (id: string) => setSelectedId(id);
 
   const selectedComponent = components.find((c) => c.id === selectedId);
 

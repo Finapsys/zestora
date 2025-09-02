@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { ResizableBox } from "react-resizable";
-import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
+import Draggable from "react-draggable";
 import { AiOutlineDelete } from "react-icons/ai";
 import styles from "../styles/FormComponent.module.css";
 

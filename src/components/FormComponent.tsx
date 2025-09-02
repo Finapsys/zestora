@@ -25,6 +25,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
   width,
   height,
   selected,
+  placeholder,
   onSelect,
   onDelete,
   onUpdate,
@@ -35,9 +36,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
     <Draggable
       nodeRef={nodeRef}
       position={{ x, y }}
-      onStop={(_e: DraggableEvent, data: DraggableData) =>
-        onUpdate(id, { x: data.x, y: data.y })
-      }
+      onStop={(_e, data) => onUpdate(id, { x: data.x, y: data.y })}
       onStart={() => onSelect(id)}
     >
       <div ref={nodeRef} className={styles.wrapper}>
@@ -56,7 +55,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
           >
             <input
               type="text"
-              placeholder="Text Input"
+              placeholder={placeholder || "Text Input"}
               className={styles.inputField}
             />
           </div>

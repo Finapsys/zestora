@@ -19,7 +19,6 @@ export interface FormComponentProps {
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
 }
 
-
 const FormComponent: React.FC<FormComponentProps> = ({
   id,
   x,
@@ -46,36 +45,55 @@ const FormComponent: React.FC<FormComponentProps> = ({
       onStart={() => onSelect(id)}
     >
       <div ref={nodeRef} className={styles.wrapper}>
-        <ResizableBox
-          width={width}
-          height={height}
-          onResizeStop={(_e, data) =>
-            onUpdate(id, { width: data.size.width, height: data.size.height })
-          }
-        >
-          <div
-            className={`${styles.component} ${
-              selected ? styles.selected : ""
-            } ${type === "label" ? styles.labelWrapper : styles.inputWrapper}`}
-            onClick={() => onSelect(id)}
+        {type === "text" ? (
+          <ResizableBox
+            width={width}
+            height={height}
+            axis="x"
+            resizeHandles={["e", "w"]}
+            minConstraints={[50, height]}
+            maxConstraints={[500, height]}
+            onResizeStop={(_e, data) =>
+              onUpdate(id, { width: data.size.width })
+            }
           >
-            {type === "text" ? (
+            <div
+              className={`${styles.component} ${
+                selected ? styles.selected : ""
+              } ${styles.inputWrapper}`}
+              onClick={() => onSelect(id)}
+            >
               <input
                 type="text"
                 placeholder={placeholder || "Text Input"}
                 className={styles.inputField}
               />
-            ) : (
-              <span className={styles.labelText}>{labelText || "Label"}</span>
+              {selected && (
+                <AiOutlineDelete
+                  size={18}
+                  className={styles.deleteIcon}
+                  onClick={() => onDelete(id)}
+                />
+              )}
+            </div>
+          </ResizableBox>
+        ) : (
+          <div
+            className={`${styles.component} ${
+              selected ? styles.selected : ""
+            } ${styles.labelWrapper}`}
+            onClick={() => onSelect(id)}
+          >
+            <span className={styles.labelText}>{labelText || "Label"}</span>
+            {selected && (
+              <AiOutlineDelete
+                size={16}
+                className={styles.inlineDeleteIcon}
+                onClick={() => onDelete(id)}
+              />
             )}
           </div>
-        </ResizableBox>
-
-        <AiOutlineDelete
-          size={18}
-          className={styles.deleteIcon}
-          onClick={() => onDelete(id)}
-        />
+        )}
       </div>
     </Draggable>
   );

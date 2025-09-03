@@ -49,6 +49,10 @@
   min-width: 30px;
 }
 
+.inputFieldT24{
+  width: 50px;
+}
+
 .labelText {
   font-weight: 500;
   font-size: 16px;

@@ -87,7 +87,6 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     margin,
     boxShadow,
     src,
-    format12h,
     onSelect,
     onDelete,
     onUpdate,
@@ -117,17 +116,21 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     if (type === "textarea") {
       return (
         <textarea
+          id={id}
           placeholder={placeholder}
           value={value || ""}
           onChange={(e) => onUpdate(id, { value: e.target.value })}
           style={sharedStyle}
+          aria-label={labelText || placeholder || type}
+          title={labelText || placeholder || type}
         />
       );
     }
 
-    if (type === "time" || type === "time24") {
+    if (type === "time") {
       return (
         <input
+          id={id}
           type="time"
           value={value || ""}
           onChange={(e) => onUpdate(id, { value: e.target.value })}
@@ -138,14 +141,100 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
       );
     }
 
+    if (type === "time24") {
+      const getDefaultTime = () => {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+        const ss = String(now.getSeconds()).padStart(2, "0");
+        return `${hh}:${mm}:${ss}`;
+      };
+
+      const initial = value || getDefaultTime();
+      const [h, m, s] = initial.split(":").map((v) => parseInt(v, 10));
+
+      const handleChange = (unit: "h" | "m" | "s", val: number) => {
+        let hours = h,
+          minutes = m,
+          seconds = s;
+        if (unit === "h") hours = val;
+        if (unit === "m") minutes = val;
+        if (unit === "s") seconds = val;
+
+        hours = Math.max(0, Math.min(23, hours));
+        minutes = Math.max(0, Math.min(59, minutes));
+        seconds = Math.max(0, Math.min(59, seconds));
+
+        onUpdate(id, {
+          value: `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+            2,
+            "0"
+          )}:${String(seconds).padStart(2, "0")}`,
+        });
+      };
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            ...sharedStyle,
+          }}
+        >
+          <input
+            id={`${id}-h`}
+            type="number"
+            value={h}
+            min={0}
+            max={23}
+            step={1}
+            onChange={(e) => handleChange("h", parseInt(e.target.value) || 0)}
+            style={{ width: 50 }}
+            aria-label="Hours"
+            title="Hours"
+          />
+          <span>:</span>
+          <input
+            id={`${id}-m`}
+            type="number"
+            value={m}
+            min={0}
+            max={59}
+            step={1}
+            onChange={(e) => handleChange("m", parseInt(e.target.value) || 0)}
+            className={styles.inputFieldT24}
+            aria-label="Minutes"
+            title="Minutes"
+          />
+          <span>:</span>
+          <input
+            id={`${id}-s`}
+            type="number"
+            value={s}
+            min={0}
+            max={59}
+            step={1}
+            onChange={(e) => handleChange("s", parseInt(e.target.value) || 0)}
+            className={styles.inputFieldT24}
+            aria-label="Seconds"
+            title="Seconds"
+          />
+        </div>
+      );
+    }
+
     if (["text", "number", "email", "mobile", "date", "file"].includes(type)) {
       return (
         <input
+          id={id}
           type={type === "mobile" ? "tel" : type}
           value={value || ""}
           placeholder={placeholder}
           onChange={(e) => onUpdate(id, { value: e.target.value })}
           style={sharedStyle}
+          aria-label={labelText || placeholder || type}
+          title={labelText || placeholder || type}
         />
       );
     }
@@ -153,10 +242,12 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     if (type === "select") {
       return (
         <select
+          id={id}
           value={value || ""}
           onChange={(e) => onUpdate(id, { value: e.target.value })}
           style={sharedStyle}
           aria-label={labelText || "Select an option"}
+          title={labelText || "Select an option"}
         >
           {(options || []).map((opt, idx) => (
             <option key={idx} value={opt}>
@@ -171,11 +262,31 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
       return (
         <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <input
+            id={id}
             type="checkbox"
             checked={!!checked}
             onChange={(e) => onUpdate(id, { checked: e.target.checked })}
+            aria-label={labelText || "Checkbox"}
+            title={labelText || "Checkbox"}
           />
           {labelText || "Checkbox"}
+        </label>
+      );
+    }
+
+    if (type === "radio") {
+      return (
+        <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <input
+            id={id}
+            type="radio"
+            name={id}
+            checked={!!checked}
+            onChange={(e) => onUpdate(id, { checked: e.target.checked })}
+            aria-label={labelText || "Radio"}
+            title={labelText || "Radio"}
+          />
+          {labelText || "Radio"}
         </label>
       );
     }
@@ -192,27 +303,16 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
               <input
                 type={isRadio ? "radio" : "checkbox"}
                 name={id}
-                checked={value === opt}
-                onChange={() => onUpdate(id, { value: isRadio ? opt : value })}
+                value={opt}
+                checked={isRadio ? value === opt : value?.includes(opt)}
+                onChange={() => onUpdate(id, { value: isRadio ? opt : opt })}
+                aria-label={opt}
+                title={opt}
               />
               {opt}
             </label>
           ))}
         </div>
-      );
-    }
-
-    if (type === "radio") {
-      return (
-        <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <input
-            type="radio"
-            name={id}
-            checked={!!checked}
-            onChange={(e) => onUpdate(id, { checked: e.target.checked })}
-          />
-          {labelText || "Radio"}
-        </label>
       );
     }
 
@@ -227,7 +327,13 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     }
 
     if (type === "image" && src)
-      return <img src={src} style={{ width: "100%", height: "100%" }} alt="" />;
+      return (
+        <img
+          src={src}
+          style={{ width: "100%", height: "100%" }}
+          alt={labelText || "image"}
+        />
+      );
     if (type === "video" && src)
       return (
         <video src={src} style={{ width: "100%", height: "100%" }} controls />

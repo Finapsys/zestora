@@ -13,20 +13,37 @@ const Home: React.FC = () => {
   const addComponent = (type: "text" | "label") => {
     const id = `comp-${Date.now()}`;
     const offset = 10;
+    const margin = 10;
     const verticalSpacing = 60;
+
+    let x = offset;
+    let y = offset;
+
+    if (components.length > 0) {
+      const last = components[components.length - 1];
+
+      const sameRow = Math.abs(last.y - y) < verticalSpacing / 2;
+
+      if (sameRow) {
+        x = last.x + last.width + margin;
+        y = last.y;
+      } else {
+        y = last.y + last.height + margin;
+      }
+    }
 
     setComponents([
       ...components,
       {
         id,
         type,
-        x: offset,
-        y: offset + components.length * verticalSpacing,
+        x,
+        y,
         width: type === "text" ? 200 : 150,
         height: 50,
         selected: false,
         placeholder: "",
-        labelText: "",
+        labelText: type === "label" ? "Label" : "",
         onSelect: () => {},
         onDelete: () => {},
         onUpdate: () => {},

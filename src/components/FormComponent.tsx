@@ -18,13 +18,18 @@ export interface FormComponentProps {
 
   placeholder?: string;
   fontSize?: number;
+  fontFamily?: string;
+  fontWeight?: string;
+  textAlign?: "left" | "center" | "right";
   color?: string;
   background?: string;
   border?: string;
+  borderRadius?: string;
   padding?: string;
+  margin?: string;
+  boxShadow?: string;
 
   labelText?: string;
-  fontWeight?: string;
 
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
@@ -40,20 +45,47 @@ const FormComponent: React.FC<FormComponentProps> = ({
   selected,
   type,
   placeholder,
+  value,
   labelText,
+  fontSize,
+  fontFamily,
+  fontWeight,
+  textAlign,
+  color,
+  background,
+  border,
+  borderRadius,
+  padding,
+  margin,
+  boxShadow,
   onSelect,
   onDelete,
   onUpdate,
 }) => {
   const nodeRef = useRef<HTMLDivElement>(null);
 
+  const sharedStyle: React.CSSProperties = {
+    fontSize: fontSize ? `${fontSize}px` : undefined,
+    fontFamily,
+    fontWeight,
+    textAlign,
+    color,
+    background,
+    border,
+    borderRadius,
+    padding,
+    margin,
+    boxShadow,
+    width: "100%",
+    height: "100%",
+    boxSizing: "border-box",
+  };
+
   return (
     <Draggable
       nodeRef={nodeRef}
       position={{ x, y }}
-      onStop={(_e: DraggableEvent, data: DraggableData) =>
-        onUpdate(id, { x: data.x, y: data.y })
-      }
+      onStop={(_e, data) => onUpdate(id, { x: data.x, y: data.y })}
       onStart={() => onSelect(id)}
     >
       <div ref={nodeRef} className={styles.wrapper}>
@@ -78,7 +110,9 @@ const FormComponent: React.FC<FormComponentProps> = ({
               <input
                 type="text"
                 placeholder={placeholder || "Text Input"}
-                className={styles.inputField}
+                value={value || ""}
+                onChange={(e) => onUpdate(id, { value: e.target.value })}
+                style={sharedStyle}
               />
               {selected && (
                 <AiOutlineDelete
@@ -95,8 +129,14 @@ const FormComponent: React.FC<FormComponentProps> = ({
               selected ? styles.selected : ""
             } ${styles.labelWrapper}`}
             onClick={() => onSelect(id)}
+            style={{
+              ...sharedStyle,
+              display: "inline-block",
+              width,
+              height,
+            }}
           >
-            <span className={styles.labelText}>{labelText || "Label"}</span>
+            <span>{labelText || "Label"}</span>
             {selected && (
               <AiOutlineDelete
                 size={16}
@@ -112,3 +152,4 @@ const FormComponent: React.FC<FormComponentProps> = ({
 };
 
 export default FormComponent;
+

@@ -10,7 +10,6 @@
   box-sizing: border-box;
 }
 
-
 .sidebarItem {
   padding: 10px;
   margin-bottom: 8px;
@@ -25,7 +24,6 @@
 .sidebarItem:hover {
   background-color: #ddd;
 }
-
 
 .sidebarRight {
   width: 100%;

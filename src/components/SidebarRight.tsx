@@ -7,6 +7,8 @@ interface SidebarRightProps {
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
 }
 
+type LimitedTextAlign = "left" | "center" | "right";
+
 const SidebarRight: React.FC<SidebarRightProps> = ({
   selectedComponent,
   onUpdate,
@@ -18,8 +20,251 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
     field: K,
     value: FormComponentProps[K]
   ) => {
+    if (!selectedComponent) return;
     onUpdate(selectedComponent.id, { [field]: value });
   };
+
+  const commonInputs = (
+    <>
+      <tr>
+        <td>
+          <label htmlFor="id">ID</label>
+        </td>
+        <td>
+          <input id="id" type="text" value={selectedComponent.id} readOnly />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="name">Name</label>
+        </td>
+        <td>
+          <input
+            id="name"
+            type="text"
+            value={selectedComponent.name || ""}
+            onChange={(e) => {
+              const noSpaces = e.target.value.replace(/\s+/g, "");
+              handleChange("name", noSpaces);
+            }}
+            placeholder="Enter name"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="value">Value</label>
+        </td>
+        <td>
+          <input
+            id="value"
+            type="text"
+            value={selectedComponent.value || ""}
+            onChange={(e) => handleChange("value", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="x">X</label>
+        </td>
+        <td>
+          <input
+            id="x"
+            type="number"
+            value={selectedComponent.x}
+            onChange={(e) => handleChange("x", parseInt(e.target.value, 10))}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="y">Y</label>
+        </td>
+        <td>
+          <input
+            id="y"
+            type="number"
+            value={selectedComponent.y}
+            onChange={(e) => handleChange("y", parseInt(e.target.value, 10))}
+          />
+        </td>
+      </tr>
+    </>
+  );
+
+  const styleInputs = (
+    <>
+      {selectedComponent.type === "label" && (
+        <tr>
+          <td>
+            <label htmlFor="labelText">Label Text</label>
+          </td>
+          <td>
+            <input
+              id="labelText"
+              type="text"
+              value={selectedComponent.labelText || ""}
+              onChange={(e) => handleChange("labelText", e.target.value)}
+            />
+          </td>
+        </tr>
+      )}
+      <tr>
+        <td>
+          <label htmlFor="fontSize">Font Size</label>
+        </td>
+        <td>
+          <input
+            id="fontSize"
+            type="number"
+            value={selectedComponent.fontSize || 14}
+            onChange={(e) =>
+              handleChange("fontSize", parseInt(e.target.value, 10))
+            }
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="fontFamily">Font Family</label>
+        </td>
+        <td>
+          <input
+            id="fontFamily"
+            type="text"
+            value={selectedComponent.fontFamily || "Arial, sans-serif"}
+            onChange={(e) => handleChange("fontFamily", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="fontWeight">Font Weight</label>
+        </td>
+        <td>
+          <select
+            id="fontWeight"
+            value={selectedComponent.fontWeight || "normal"}
+            onChange={(e) => handleChange("fontWeight", e.target.value)}
+          >
+            <option value="normal">Normal</option>
+            <option value="bold">Bold</option>
+            <option value="lighter">Light</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="textAlign">Text Align</label>
+        </td>
+        <td>
+          <select
+            id="textAlign"
+            value={(selectedComponent.textAlign as LimitedTextAlign) || "left"}
+            onChange={(e) =>
+              handleChange("textAlign", e.target.value as LimitedTextAlign)
+            }
+          >
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="color">Color</label>
+        </td>
+        <td>
+          <input
+            id="color"
+            type="color"
+            value={selectedComponent.color || "#000000"}
+            onChange={(e) => handleChange("color", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="background">Background</label>
+        </td>
+        <td>
+          <input
+            id="background"
+            type="color"
+            value={selectedComponent.background || "#ffffff"}
+            onChange={(e) => handleChange("background", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="border">Border</label>
+        </td>
+        <td>
+          <input
+            id="border"
+            type="text"
+            value={selectedComponent.border || "1px solid #ccc"}
+            onChange={(e) => handleChange("border", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="borderRadius">Border Radius</label>
+        </td>
+        <td>
+          <input
+            id="borderRadius"
+            type="text"
+            value={selectedComponent.borderRadius || "4px"}
+            onChange={(e) => handleChange("borderRadius", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="padding">Padding</label>
+        </td>
+        <td>
+          <input
+            id="padding"
+            type="text"
+            value={selectedComponent.padding || "4px"}
+            onChange={(e) => handleChange("padding", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="margin">Margin</label>
+        </td>
+        <td>
+          <input
+            id="margin"
+            type="text"
+            value={selectedComponent.margin || "0px"}
+            onChange={(e) => handleChange("margin", e.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="boxShadow">Box Shadow</label>
+        </td>
+        <td>
+          <input
+            id="boxShadow"
+            type="text"
+            value={selectedComponent.boxShadow || "none"}
+            onChange={(e) => handleChange("boxShadow", e.target.value)}
+          />
+        </td>
+      </tr>
+    </>
+  );
 
   return (
     <div className={styles.sidebar}>
@@ -28,87 +273,19 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       <fieldset>
         <legend>Common</legend>
         <table className={styles.propTable}>
-          <tbody>
-            <tr>
-              <td>
-                <label htmlFor="id">ID</label>
-              </td>
-              <td>
-                <input
-                  id="id"
-                  type="text"
-                  value={selectedComponent.id}
-                  readOnly
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label htmlFor="name">Name</label>
-              </td>
-              <td>
-                <input
-                  id="name"
-                  type="text"
-                  value={selectedComponent.name || ""}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                  placeholder="Enter name"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label htmlFor="value">Value</label>
-              </td>
-              <td>
-                <input
-                  id="value"
-                  type="text"
-                  value={selectedComponent.value || ""}
-                  onChange={(e) => handleChange("value", e.target.value)}
-                  placeholder="Enter value"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label htmlFor="x">X</label>
-              </td>
-              <td>
-                <input
-                  id="x"
-                  type="number"
-                  value={selectedComponent.x}
-                  onChange={(e) =>
-                    handleChange("x", parseInt(e.target.value, 10))
-                  }
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label htmlFor="y">Y</label>
-              </td>
-              <td>
-                <input
-                  id="y"
-                  type="number"
-                  value={selectedComponent.y}
-                  onChange={(e) =>
-                    handleChange("y", parseInt(e.target.value, 10))
-                  }
-                />
-              </td>
-            </tr>
-          </tbody>
+          <tbody>{commonInputs}</tbody>
         </table>
       </fieldset>
 
-      {selectedComponent.type === "text" && (
-        <fieldset>
-          <legend>Text Input</legend>
-          <table className={styles.propTable}>
-            <tbody>
+      <fieldset>
+        <legend>
+          {selectedComponent.type === "text"
+            ? "Text Input Styling"
+            : "Label Styling"}
+        </legend>
+        <table className={styles.propTable}>
+          <tbody>
+            {selectedComponent.type === "text" && (
               <tr>
                 <td>
                   <label htmlFor="placeholder">Placeholder</label>
@@ -121,149 +298,14 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
                     onChange={(e) =>
                       handleChange("placeholder", e.target.value)
                     }
-                    placeholder="Enter placeholder"
                   />
                 </td>
               </tr>
-              <tr>
-                <td>
-                  <label htmlFor="fontSize">Font Size</label>
-                </td>
-                <td>
-                  <input
-                    id="fontSize"
-                    type="number"
-                    value={selectedComponent.fontSize || 14}
-                    onChange={(e) =>
-                      handleChange("fontSize", parseInt(e.target.value, 10))
-                    }
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="color">Color</label>
-                </td>
-                <td>
-                  <input
-                    id="color"
-                    type="color"
-                    value={selectedComponent.color || "#000000"}
-                    onChange={(e) => handleChange("color", e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="background">Background</label>
-                </td>
-                <td>
-                  <input
-                    id="background"
-                    type="color"
-                    value={selectedComponent.background || "#ffffff"}
-                    onChange={(e) => handleChange("background", e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="border">Border</label>
-                </td>
-                <td>
-                  <input
-                    id="border"
-                    type="text"
-                    value={selectedComponent.border || "1px solid #ccc"}
-                    onChange={(e) => handleChange("border", e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="padding">Padding</label>
-                </td>
-                <td>
-                  <input
-                    id="padding"
-                    type="text"
-                    value={selectedComponent.padding || "4px"}
-                    onChange={(e) => handleChange("padding", e.target.value)}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </fieldset>
-      )}
-
-      {selectedComponent.type === "label" && (
-        <fieldset>
-          <legend>Label</legend>
-          <table className={styles.propTable}>
-            <tbody>
-              <tr>
-                <td>
-                  <label htmlFor="labelText">Label Text</label>
-                </td>
-                <td>
-                  <input
-                    id="labelText"
-                    type="text"
-                    value={selectedComponent.labelText || ""}
-                    onChange={(e) => handleChange("labelText", e.target.value)}
-                    placeholder="Enter label"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="labelFontSize">Font Size</label>
-                </td>
-                <td>
-                  <input
-                    id="labelFontSize"
-                    type="number"
-                    value={selectedComponent.fontSize || 16}
-                    onChange={(e) =>
-                      handleChange("fontSize", parseInt(e.target.value, 10))
-                    }
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="fontWeight">Font Weight</label>
-                </td>
-                <td>
-                  <select
-                    id="fontWeight"
-                    value={selectedComponent.fontWeight || "normal"}
-                    onChange={(e) => handleChange("fontWeight", e.target.value)}
-                  >
-                    <option value="normal">Normal</option>
-                    <option value="bold">Bold</option>
-                    <option value="lighter">Light</option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="labelColor">Color</label>
-                </td>
-                <td>
-                  <input
-                    id="labelColor"
-                    type="color"
-                    value={selectedComponent.color || "#000000"}
-                    onChange={(e) => handleChange("color", e.target.value)}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </fieldset>
-      )}
+            )}
+            {styleInputs}
+          </tbody>
+        </table>
+      </fieldset>
     </div>
   );
 };

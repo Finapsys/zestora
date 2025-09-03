@@ -61,28 +61,17 @@ const Canvas: React.FC<CanvasProps> = ({
           other.height
         )
       ) {
-        const snapRight = other.x + other.width + H_MARGIN;
-        const snapLeft = other.x - current.width - H_MARGIN;
+        const verticallyAligned = Math.abs(newY - other.y) < V_MARGIN * 2;
 
-        const distToRight = Math.abs(snapRight - newX);
-        const distToLeft = Math.abs(snapLeft - newX);
+        if (verticallyAligned) {
+          const snapRight = other.x + other.width + H_MARGIN;
+          const snapLeft = other.x - current.width - H_MARGIN;
 
-        const candidateX = distToRight <= distToLeft ? snapRight : snapLeft;
+          const distToRight = Math.abs(snapRight - newX);
+          const distToLeft = Math.abs(snapLeft - newX);
 
-        newX = candidateX;
-
-        if (
-          overlaps(
-            newX,
-            newY,
-            current.width,
-            current.height,
-            other.x,
-            other.y,
-            other.width,
-            other.height
-          )
-        ) {
+          newX = distToRight <= distToLeft ? snapRight : snapLeft;
+        } else {
           newY = other.y + other.height + V_MARGIN;
         }
       }

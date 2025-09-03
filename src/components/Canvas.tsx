@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import FormComponent, { FormComponentProps } from "./FormComponent";
 import styles from "../styles/Canvas.module.css";
+import {
+  AiOutlineEye,
+  AiOutlineCode,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
 
 interface CanvasProps {
   components: FormComponentProps[];
@@ -22,9 +27,9 @@ const Canvas: React.FC<CanvasProps> = ({
   onDeselect,
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
-
   const [verticalLine, setVerticalLine] = useState<number | null>(null);
   const [horizontalLine, setHorizontalLine] = useState<number | null>(null);
+  const [formName, setFormName] = useState<string>("Untitled Form");
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === canvasRef.current) onDeselect?.();
@@ -39,9 +44,7 @@ const Canvas: React.FC<CanvasProps> = ({
     by: number,
     bw: number,
     bh: number
-  ) => {
-    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
-  };
+  ) => ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 
   const handleUpdatePosition = (id: string, x: number, y: number) => {
     const current = components.find((c) => c.id === id);
@@ -49,7 +52,6 @@ const Canvas: React.FC<CanvasProps> = ({
 
     let newX = x;
     let newY = y;
-
     setVerticalLine(null);
     setHorizontalLine(null);
 
@@ -60,7 +62,6 @@ const Canvas: React.FC<CanvasProps> = ({
         newY = other.y;
         setHorizontalLine(other.y + other.height / 2);
       }
-
       if (Math.abs(newX - other.x) <= ALIGN_THRESHOLD) {
         newX = other.x;
         setVerticalLine(other.x + other.width / 2);
@@ -79,15 +80,13 @@ const Canvas: React.FC<CanvasProps> = ({
         )
       ) {
         const verticallyAligned = Math.abs(newY - other.y) < V_MARGIN * 2;
-
         if (verticallyAligned) {
           const snapRight = other.x + other.width + H_MARGIN;
           const snapLeft = other.x - current.width - H_MARGIN;
-
-          const distToRight = Math.abs(snapRight - newX);
-          const distToLeft = Math.abs(snapLeft - newX);
-
-          newX = distToRight <= distToLeft ? snapRight : snapLeft;
+          newX =
+            Math.abs(snapRight - newX) <= Math.abs(snapLeft - newX)
+              ? snapRight
+              : snapLeft;
         } else {
           newY = other.y + other.height + V_MARGIN;
         }
@@ -107,39 +106,73 @@ const Canvas: React.FC<CanvasProps> = ({
   };
 
   return (
-    <div ref={canvasRef} className={styles.canvas} onClick={handleCanvasClick}>
-      {components.map((comp) => (
-        <FormComponent
-          key={comp.id}
-          {...comp}
-          onSelect={onSelect}
-          onDelete={onDelete}
-          onUpdate={(id, data) => {
-            if (typeof data.x === "number" && typeof data.y === "number") {
-              handleUpdatePosition(id, data.x, data.y);
-            } else {
-              onUpdate(id, data);
-            }
-          }}
-          onDragStop={() => {
-            setVerticalLine(null);
-            setHorizontalLine(null);
-          }}
+    <div className={styles.canvasWrapper}>
+      <div className={styles.canvasHeader}>
+        <input
+          type="text"
+          value=""
+          onChange={(e) => setFormName(e.target.value)}
+          placeholder="Untitled Form"
+          className={styles.formNameInput}
         />
-      ))}
+        <div className={styles.headerButtons}>
+          <button type="button">
+            <AiOutlineEye style={{ marginRight: 5 }} />
+            Form Preview
+          </button>
+          <button type="button">
+            <AiOutlineCode style={{ marginRight: 5 }} />
+            Form Code Preview
+          </button>
+          <button type="button">
+            <AiOutlinePlusCircle style={{ marginRight: 5 }} />
+            Create Form
+          </button>
+        </div>
+      </div>
 
-      {verticalLine !== null && (
-        <div
-          className={`${styles.alignmentLine} ${styles.verticalLine}`}
-          style={{ "--line-left": `${verticalLine}px` } as React.CSSProperties}
-        />
-      )}
-      {horizontalLine !== null && (
-        <div
-          className={`${styles.alignmentLine} ${styles.horizontalLine}`}
-          style={{ "--line-top": `${horizontalLine}px` } as React.CSSProperties}
-        />
-      )}
+      <div
+        ref={canvasRef}
+        className={styles.canvas}
+        onClick={handleCanvasClick}
+      >
+        {components.map((comp) => (
+          <FormComponent
+            key={comp.id}
+            {...comp}
+            onSelect={onSelect}
+            onDelete={onDelete}
+            onUpdate={(id, data) => {
+              if (typeof data.x === "number" && typeof data.y === "number") {
+                handleUpdatePosition(id, data.x, data.y);
+              } else {
+                onUpdate(id, data);
+              }
+            }}
+            onDragStop={() => {
+              setVerticalLine(null);
+              setHorizontalLine(null);
+            }}
+          />
+        ))}
+
+        {verticalLine !== null && (
+          <div
+            className={`${styles.alignmentLine} ${styles.verticalLine}`}
+            style={
+              { "--line-left": `${verticalLine}px` } as React.CSSProperties
+            }
+          />
+        )}
+        {horizontalLine !== null && (
+          <div
+            className={`${styles.alignmentLine} ${styles.horizontalLine}`}
+            style={
+              { "--line-top": `${horizontalLine}px` } as React.CSSProperties
+            }
+          />
+        )}
+      </div>
     </div>
   );
 };

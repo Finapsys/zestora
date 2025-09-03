@@ -1,24 +1,57 @@
+.canvasWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.canvasHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.formNameInput {
+  padding: 6px 10px;
+  font-size: 16px;
+  width: 250px;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+}
+
+.headerButtons {
+  display: flex;
+  align-items: center;
+}
+
+.headerButtons button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #0070f3;
+  background-color: #ffffff;
+  color: #0070f3;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.headerButtons button:hover {
+  background-color: #0070f3;
+  color: white;
+}
+
 .canvas {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
   position: relative;
   background-color: #f9f9f9;
-}
-
-.alignmentLine {
-  position: absolute;
-  background-color: red;
-  pointer-events: none;
-}
-
-.verticalLine {
-  width: 1px;
-  height: 100%;
-  left: var(--line-left);
-}
-
-.horizontalLine {
-  width: 100%;
-  height: 1px;
-  top: var(--line-top);
+  overflow: auto;
 }

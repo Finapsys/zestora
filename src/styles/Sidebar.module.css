@@ -1,13 +1,93 @@
 .sidebar {
-  width: 200px;
+  width: 100%;
+  height: 100vh;
+  background-color: #f9f9f9;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   padding: 10px;
+  box-sizing: border-box;
 }
 
+
 .sidebarItem {
-  padding: 8px;
-  margin-bottom: 5px;
+  padding: 10px;
+  margin-bottom: 8px;
   cursor: pointer;
   background-color: #eee;
   border-radius: 4px;
   text-align: center;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebarItem:hover {
+  background-color: #ddd;
+}
+
+
+.sidebarRight {
+  width: 100%;
+  height: 100vh;
+  background-color: #fdfdfd;
+  border-left: 1px solid #ddd;
+  padding: 12px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.sidebarRight h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.sidebarRight fieldset {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  padding: 8px 10px;
+}
+
+.sidebarRight legend {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  padding: 0 6px;
+}
+
+.propTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.propTable td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #eaeaea;
+  vertical-align: middle;
+}
+
+.propTable td:first-child {
+  width: 40%;
+  font-weight: 500;
+  color: #333;
+}
+
+.propTable input,
+.propTable select {
+  width: 100%;
+  padding: 5px 6px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  font-size: 13px;
+  background-color: #fff;
+}
+
+.propTable input:focus,
+.propTable select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
 }

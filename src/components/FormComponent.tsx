@@ -12,8 +12,20 @@ export interface FormComponentProps {
   width: number;
   height: number;
   selected: boolean;
+
+  name?: string;
+  value?: string;
+
   placeholder?: string;
+  fontSize?: number;
+  color?: string;
+  background?: string;
+  border?: string;
+  padding?: string;
+
   labelText?: string;
+  fontWeight?: string;
+
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;

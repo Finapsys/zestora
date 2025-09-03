@@ -4,6 +4,11 @@ import { ResizableBox } from "react-resizable";
 import Draggable from "react-draggable";
 import { AiOutlineDelete } from "react-icons/ai";
 import styles from "../styles/FormComponent.module.css";
+import Image from "next/image";
+import "leaflet/dist/leaflet.css";
+import dynamic from "next/dynamic";
+
+const MapLeaflet = dynamic(() => import("./MapLeaflet"), { ssr: false });
 
 export interface FormComponentProps {
   id: string;
@@ -30,7 +35,9 @@ export interface FormComponentProps {
     | "checkbox"
     | "checkboxList"
     | "radio"
-    | "radioList";
+    | "radioList"
+    | "countdown"
+    | "map";
   x: number;
   y: number;
   width: number;
@@ -55,6 +62,7 @@ export interface FormComponentProps {
   boxShadow?: string;
   src?: string;
   format12h?: boolean;
+  countdownTime?: number;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
@@ -87,6 +95,7 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     margin,
     boxShadow,
     src,
+    countdownTime,
     onSelect,
     onDelete,
     onUpdate,
@@ -94,6 +103,21 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
   } = props;
 
   const nodeRef = useRef<HTMLDivElement>(null);
+
+  const [timeLeft, setTimeLeft] = React.useState(countdownTime || 60);
+
+  React.useEffect(() => {
+    if (type !== "countdown") return;
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
+    return () => clearInterval(timer);
+  }, [type, timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
 
   const sharedStyle: React.CSSProperties = {
     fontSize: fontSize ? `${fontSize}px` : undefined,
@@ -316,57 +340,168 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
       );
     }
 
+    if (type === "countdown") {
+      return (
+        <div
+          style={{
+            ...sharedStyle,
+            fontSize: fontSize ? `${fontSize}px` : "16px",
+            fontWeight: "bold",
+            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {formatTime(timeLeft)}
+        </div>
+      );
+    }
+
     return null;
   };
 
   const renderContent = () => {
+    const renderDeleteIcon = () => {
+      if (!selected) return null;
+      return (
+        <AiOutlineDelete
+          size={18}
+          className={styles.deleteIcon}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(id);
+          }}
+        />
+      );
+    };
+
+    const containerStyle: React.CSSProperties = {
+      position: "relative",
+      width,
+      height,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      border:
+        type === "signature"
+          ? "1px dashed #ccc"
+          : type === "div" || type === "groupbox"
+          ? "1px solid #ccc"
+          : undefined,
+      backgroundColor:
+        type === "div" || type === "groupbox" ? "#f5f5f5" : undefined,
+      ...(["label", "heading", "paragraph", "link", "signature"].includes(type)
+        ? sharedStyle
+        : {}),
+    };
+
     if (["label", "heading", "paragraph", "link"].includes(type)) {
       const Tag =
         type === "heading" ? "h3" : type === "paragraph" ? "p" : "span";
-      return <Tag style={sharedStyle}>{labelText || type}</Tag>;
+      return (
+        <div style={containerStyle}>
+          <Tag style={sharedStyle}>{labelText || type}</Tag>
+          {renderDeleteIcon()}
+        </div>
+      );
     }
 
-    if (type === "image" && src)
+    if (type === "image" && src) {
       return (
-        <img
-          src={src}
-          style={{ width: "100%", height: "100%" }}
-          alt={labelText || "image"}
-        />
+        <div style={containerStyle}>
+          <Image
+            src={src}
+            alt={labelText || "image"}
+            width={width || 200}
+            height={height || 200}
+            style={{ objectFit: "contain", width: "100%", height: "100%" }}
+          />
+          {renderDeleteIcon()}
+        </div>
       );
-    if (type === "video" && src)
+    }
+
+    if (type === "video" && src) {
       return (
-        <video src={src} style={{ width: "100%", height: "100%" }} controls />
+        <div
+          style={containerStyle}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(id);
+          }}
+        >
+          <video
+            src={src}
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "block",
+              pointerEvents: "none",
+            }}
+            controls
+          />
+          {renderDeleteIcon()}
+        </div>
       );
-    if (type === "signature")
+    }
+    
+    if (type === "map") {
+      const defaultCoords: [number, number] = [20.5937, 78.9629];
+      const coords: [number, number] = src
+        ? (() => {
+            const arr = src.split(",").map(Number);
+            if (arr.length === 2 && !arr.some(isNaN))
+              return [arr[0], arr[1]] as [number, number];
+            return defaultCoords;
+          })()
+        : defaultCoords;
+
       return (
         <div
           style={{
-            ...sharedStyle,
-            border: "1px dashed #ccc",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            ...containerStyle,
+            position: "relative",
+            overflow: "hidden",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(id);
           }}
         >
+          <MapLeaflet coords={coords} />
+          {selected && (
+            <AiOutlineDelete
+              size={18}
+              className={styles.deleteIcon}
+              style={{ zIndex: 1000 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
+            />
+          )}
+        </div>
+      );
+    }
+
+    if (type === "signature") {
+      return (
+        <div style={containerStyle}>
           Signature
+          {renderDeleteIcon()}
         </div>
       );
-    if (type === "div" || type === "groupbox")
+    }
+
+    if (type === "div" || type === "groupbox") {
       return (
-        <div
-          style={{
-            ...sharedStyle,
-            border: "1px solid #ccc",
-            backgroundColor: "#f5f5f5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <div style={containerStyle}>
           {type.toUpperCase()}
+          {renderDeleteIcon()}
         </div>
       );
+    }
 
     return null;
   };
@@ -386,6 +521,7 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     "checkboxList",
     "radio",
     "radioList",
+    "countdown",
   ].includes(type);
 
   return (
@@ -416,13 +552,17 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
                 selected ? styles.selected : ""
               } ${styles.inputWrapper}`}
               onClick={() => onSelect(id)}
+              style={{ position: "relative" }}
             >
               {renderInput()}
-              {selected && (
+              {selected && type === "countdown" && (
                 <AiOutlineDelete
                   size={18}
                   className={styles.deleteIcon}
-                  onClick={() => onDelete(id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(id);
+                  }}
                 />
               )}
             </div>
@@ -436,13 +576,6 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
             style={{ ...sharedStyle, display: "inline-block", width, height }}
           >
             {renderContent()}
-            {selected && (
-              <AiOutlineDelete
-                size={18}
-                className={styles.deleteIcon}
-                onClick={() => onDelete(id)}
-              />
-            )}
           </div>
         )}
       </div>

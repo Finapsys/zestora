@@ -30,44 +30,72 @@ const Home: React.FC = () => {
       }
     }
 
-    const defaultLabelTextMap: Record<string, string> = {
-      label: "Label",
-      heading: "Heading",
-      paragraph: "Paragraph",
-      link: "Link",
-      select: "Select",
-      checkbox: "Checkbox",
-      checkboxList: "Checkbox List",
-      radio: "Radio Button",
-      radioList: "Radio List",
+    const base: FormComponentProps = {
+      id,
+      type,
+      x,
+      y,
+      width: type === "text" ? 200 : 150,
+      height: 50,
+      selected: false,
+      onSelect: () => {},
+      onDelete: () => {},
+      onUpdate: () => {},
     };
 
-    const defaultOptionsMap: Record<string, string[]> = {
-      select: ["Option 1", "Option 2"],
-      checkboxList: ["Option 1", "Option 2"],
-      radioList: ["Option 1", "Option 2"],
-    };
+    let extra: Partial<FormComponentProps> = {};
 
-    setComponents([
-      ...components,
-      {
-        id,
-        type,
-        x,
-        y,
-        width: type === "text" ? 200 : 150,
-        height: 50,
-        selected: false,
-        placeholder: type === "text" ? "Enter text" : undefined,
-        labelText: defaultLabelTextMap[type] || "",
-        value: "",
-        options: defaultOptionsMap[type] || undefined,
-        checked: type === "checkbox" || type === "radio" ? false : undefined,
-        onSelect: () => {},
-        onDelete: () => {},
-        onUpdate: () => {},
-      },
-    ]);
+    switch (type) {
+      case "text":
+        extra = { placeholder: "Enter text", value: "" };
+        break;
+      case "label":
+        extra = { labelText: "Label" };
+        break;
+      case "heading":
+        extra = { labelText: "Heading" };
+        break;
+      case "paragraph":
+        extra = { labelText: "Paragraph" };
+        break;
+      case "link":
+        extra = { labelText: "Link" };
+        break;
+      case "select":
+        extra = { options: ["Option 1", "Option 2"] };
+        break;
+      case "checkbox":
+        extra = { checked: false, labelText: "Checkbox" };
+        break;
+      case "radio":
+        extra = { checked: false, labelText: "Radio" };
+        break;
+      case "checkboxList":
+        extra = { options: ["Option 1", "Option 2"] };
+        break;
+      case "radioList":
+        extra = { options: ["Option 1", "Option 2"] };
+        break;
+      case "countdown":
+        extra = { countdownTime: 60, labelText: "Countdown Timer" };
+        break;
+      case "image":
+        extra = { src: "/placeholder.png", labelText: "Image" };
+        break;
+      case "video":
+        extra = { src: "/sample.mp4", labelText: "Video" };
+        break;
+      case "map":
+        extra = {
+          src: "https://maps.google.com",
+          labelText: "Map",
+          width: 300,
+          height: 200,
+        };
+        break;
+    }
+
+    setComponents([...components, { ...base, ...extra }]);
   };
 
   const updateComponent = (id: string, data: Partial<FormComponentProps>) => {

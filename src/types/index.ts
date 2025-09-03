@@ -22,12 +22,14 @@ export interface InputComponent extends BaseComponent {
     | "checkbox"
     | "checkboxList"
     | "radio"
-    | "radioList";
+    | "radioList"
+    | "countdown";
   placeholder?: string;
   value?: string;
   format12h?: boolean;
   options?: string[];
   checked?: boolean;
+  countdownTime?: number;
 }
 
 export interface LabelComponent extends BaseComponent {
@@ -38,7 +40,7 @@ export interface LabelComponent extends BaseComponent {
 }
 
 export interface MediaComponent extends BaseComponent {
-  type: "image" | "video" | "signature";
+  type: "image" | "video" | "signature" | "map";
   src?: string;
 }
 

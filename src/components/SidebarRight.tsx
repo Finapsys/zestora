@@ -110,7 +110,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
 
   const styleInputs = (
     <>
-      {/* Label / Heading / Paragraph / Link */}
       {["label", "heading", "paragraph", "link"].includes(
         selectedComponent.type
       ) && (
@@ -128,7 +127,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-      {/* Placeholder for input types */}
+
       {[
         "text",
         "textarea",
@@ -158,6 +157,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {["text", "label", "heading", "paragraph", "link"].includes(
         selectedComponent.type
       ) && (
@@ -228,7 +228,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </tr>
         </>
       )}
-      
+
       {["checkbox", "radio"].includes(selectedComponent.type) && (
         <tr>
           <td>
@@ -245,27 +245,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         </tr>
       )}
 
-      {["checkboxList", "radioList"].includes(selectedComponent.type) && (
-        <tr>
-          <td>
-            <label htmlFor="options">Options (comma separated)</label>
-          </td>
-          <td>
-            <input
-              id="options"
-              type="text"
-              value={(selectedComponent.options || []).join(", ")}
-              onChange={(e) =>
-                onUpdate(selectedComponent.id, {
-                  options: e.target.value.split(",").map((o) => o.trim()),
-                })
-              }
-            />
-          </td>
-        </tr>
-      )}
-
-      {["select", "checkboxList", "radioList"].includes(
+      {["checkboxList", "radioList", "select"].includes(
         selectedComponent.type
       ) && (
         <tr>
@@ -286,36 +266,77 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {["image", "video"].includes(selectedComponent.type) && (
         <tr>
           <td>
-            <label htmlFor="src">Source URL</label>
+            <label htmlFor="src">Source File</label>
+          </td>
+          <td>
+            <input
+              id="src"
+              type="file"
+              accept={
+                selectedComponent.type === "image" ? "image/*" : "video/*"
+              }
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  handleChange("src", URL.createObjectURL(file));
+                }
+              }}
+            />
+          </td>
+        </tr>
+      )}
+
+      {selectedComponent.type === "countdown" && (
+        <tr>
+          <td>
+            <label htmlFor="countdownTime">Time (seconds)</label>
+          </td>
+          <td>
+            <input
+              id="countdownTime"
+              type="number"
+              value={selectedComponent.countdownTime || 60}
+              onChange={(e) =>
+                handleChange("countdownTime", parseInt(e.target.value, 10))
+              }
+            />
+          </td>
+        </tr>
+      )}
+
+      {selectedComponent.type === "signature" && (
+        <tr>
+          <td colSpan={2}>
+            <em>
+              Signature component has no special inputs other than styling.
+            </em>
+          </td>
+        </tr>
+      )}
+
+      {selectedComponent.type === "map" && (
+        <tr>
+          <td>
+            <label htmlFor="src">Map Location</label>
           </td>
           <td>
             <input
               id="src"
               type="text"
-              value={selectedComponent.src || ""}
+              value={
+                selectedComponent.src ||
+                "https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=India"
+              }
               onChange={(e) => handleChange("src", e.target.value)}
             />
           </td>
         </tr>
       )}
-      {selectedComponent.type === "time" && (
-        <tr>
-          <td>
-            <label htmlFor="format12h">12h Format</label>
-          </td>
-          <td>
-            <input
-              id="format12h"
-              type="checkbox"
-              checked={!!selectedComponent.format12h}
-              onChange={(e) => handleChange("format12h", e.target.checked)}
-            />
-          </td>
-        </tr>
-      )}
+
       <tr>
         <td>
           <label htmlFor="color">Color</label>
@@ -420,7 +441,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         </table>
       </fieldset>
       <fieldset>
-        <legend>{`Component Styling`}</legend>
+        <legend>{`Component Styling & Specific`}</legend>
         <table className={styles.propTable}>
           <tbody>{styleInputs}</tbody>
         </table>

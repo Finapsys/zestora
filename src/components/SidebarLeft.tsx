@@ -15,6 +15,8 @@ import {
   AiOutlinePicture,
   AiOutlineVideoCamera,
   AiOutlineLink,
+  AiOutlineGlobal,
+  AiOutlineHourglass,
 } from "react-icons/ai";
 import { BsCheckSquare, BsCheckSquareFill, BsCircle } from "react-icons/bs";
 
@@ -108,6 +110,12 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onAdd }) => {
       icon: <BsCircle />,
       category: "Inputs",
     },
+    {
+      label: "Countdown Timer",
+      type: "countdown",
+      icon: <AiOutlineHourglass />,
+      category: "Inputs",
+    },
 
     {
       label: "Heading",
@@ -145,6 +153,12 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onAdd }) => {
       label: "Signature",
       type: "signature",
       icon: <AiOutlineEdit />,
+      category: "Media",
+    },
+    {
+      label: "Map",
+      type: "map",
+      icon: <AiOutlineGlobal />,
       category: "Media",
     },
 

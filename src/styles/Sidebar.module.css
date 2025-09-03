@@ -1,50 +1,66 @@
 .sidebar {
   width: 100%;
   height: 100vh;
-  background-color: #f9f9f9;
-  border-right: 1px solid #ddd;
+  background-color: #fdfdfd;
+  border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   padding: 10px;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 .categoryHeader {
-  font-weight: bold;
-  margin: 10px 0 5px 10px;
+  font-weight: 600;
   font-size: 14px;
-  background-color:#d6d6d6;
-  padding: 5px;
-  color: #1f1f1f;
+  background-color: #f1f1f1;
+  padding: 8px 10px;
+  color: #222;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  margin: 6px 0;
+}
+
+.categoryHeader:hover {
+  background-color: #e6e6e6;
+  color: #000;
 }
 
 .categoryItems {
   overflow: hidden;
   max-height: 0;
-  transition: max-height 0.3s ease;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  margin-left: 4px;
 }
 
 .categoryItems.expanded {
-  max-height: 500px;
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 4px;
 }
 
 .sidebarItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 8px 12px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.2s;
+  border-radius: 6px;
+  transition: background 0.2s, transform 0.1s;
+  font-size: 13px;
+  color: #333;
 }
 
 .sidebarItem:hover {
-  background-color: #f0f0f0;
+  background-color: #f3f6ff;
+  transform: translateX(2px);
+  color: #007bff;
 }
 
 .sidebarIcon {
@@ -52,36 +68,44 @@
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  min-width: 20px;
+  min-width: 22px;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.sidebarItem:hover .sidebarIcon {
+  color: #007bff;
 }
 
 .sidebarRight {
   width: 100%;
   height: 100vh;
-  background-color: #fdfdfd;
+  background-color: #fff;
   border-left: 1px solid #ddd;
-  padding: 12px;
+  padding: 14px;
   overflow-y: auto;
   box-sizing: border-box;
 }
 
 .sidebarRight h3 {
   font-size: 16px;
-  margin-bottom: 10px;
-  color: #333;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #222;
 }
 
 .sidebarRight fieldset {
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background-color: #fafafa;
 }
 
 .sidebarRight legend {
   font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: #444;
   padding: 0 6px;
 }
 
@@ -91,27 +115,28 @@
 }
 
 .propTable td {
-  padding: 6px 4px;
-  border-bottom: 1px solid #eaeaea;
+  padding: 6px 5px;
+  border-bottom: 1px solid #eee;
   vertical-align: middle;
 }
 
 .propTable td:first-child {
   width: 40%;
   font-weight: 500;
-  color: #333;
+  color: #222;
 }
 
 .propTable input,
 .propTable select {
   width: 100%;
-  padding: 5px 6px;
+  padding: 6px 8px;
   box-sizing: border-box;
   border: 1px solid #ccc;
-  border-radius: 3px;
+  border-radius: 4px;
   outline: none;
   font-size: 13px;
   background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .propTable input:focus,

@@ -48,8 +48,24 @@ export interface ContainerComponent extends BaseComponent {
   type: "div" | "groupbox";
 }
 
+export interface ButtonComponent extends BaseComponent {
+  type: "button" | "toggleButton";
+  labelText: string;
+  fontSize?: number;
+  fontWeight?: string;
+  textAlign?: "left" | "center" | "right";
+  color?: string;
+  background?: string;
+  border?: string;
+  borderRadius?: string;
+  padding?: string;
+  margin?: string;
+  boxShadow?: string;
+}
+
 export type FormComponentType =
   | InputComponent
   | LabelComponent
   | MediaComponent
-  | ContainerComponent;
+  | ContainerComponent
+  | ButtonComponent;

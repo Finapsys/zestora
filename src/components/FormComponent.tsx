@@ -7,6 +7,7 @@ import styles from "../styles/FormComponent.module.css";
 import Image from "next/image";
 import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
+import ToggleRequired from "./ToggleRequired";
 
 const MapLeaflet = dynamic(() => import("./MapLeaflet"), { ssr: false });
 
@@ -37,7 +38,9 @@ export interface FormComponentProps {
     | "radio"
     | "radioList"
     | "countdown"
-    | "map";
+    | "map"
+    | "button"
+    | "toggleButton";
   x: number;
   y: number;
   width: number;
@@ -517,6 +520,67 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
             "Signature"
           )}
           {renderDeleteIcon()}
+        </div>
+      );
+    }
+
+    if (type === "button") {
+      return (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(id);
+          }}
+          style={{
+            ...sharedStyle,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            background: "transparent",
+          }}
+        >
+          {labelText || "Button"}
+          {selected && (
+            <AiOutlineDelete
+              size={18}
+              className={styles.deleteIcon}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
+            />
+          )}
+        </button>
+      );
+    }
+
+    if (type === "toggleButton") {
+      return (
+        <div
+          style={{
+            ...sharedStyle,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            background: "transparent",
+          }}
+        >
+          <ToggleRequired
+            checked={!!checked}
+            onChange={(newChecked) => onUpdate(id, { checked: newChecked })}
+          />
+          {selected && (
+            <AiOutlineDelete
+              size={18}
+              className={styles.deleteIcon}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
+            />
+          )}
         </div>
       );
     }

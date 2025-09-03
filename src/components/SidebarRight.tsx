@@ -57,7 +57,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           <input
             id="x"
             type="number"
-            value={selectedComponent.x}
+            value={selectedComponent.x ?? 0}
             onChange={(e) => handleChange("x", parseInt(e.target.value, 10))}
           />
         </td>
@@ -127,7 +127,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
       {[
         "text",
         "textarea",
@@ -157,7 +156,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
       {["text", "label", "heading", "paragraph", "link"].includes(
         selectedComponent.type
       ) && (
@@ -228,7 +226,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </tr>
         </>
       )}
-
       {["checkbox", "radio"].includes(selectedComponent.type) && (
         <tr>
           <td>
@@ -244,7 +241,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
       {["checkboxList", "radioList", "select"].includes(
         selectedComponent.type
       ) && (
@@ -266,7 +262,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
       {["image", "video"].includes(selectedComponent.type) && (
         <tr>
           <td>
@@ -289,7 +284,173 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
+      {["button", "toggleButton"].includes(selectedComponent.type) && (
+        <>
+          <tr>
+            <td>
+              <label htmlFor="labelText">Label Text</label>
+            </td>
+            <td>
+              <input
+                id="labelText"
+                type="text"
+                value={selectedComponent.labelText || ""}
+                onChange={(e) => handleChange("labelText", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="fontSize">Font Size</label>
+            </td>
+            <td>
+              <input
+                id="fontSize"
+                type="number"
+                value={selectedComponent.fontSize || 14}
+                onChange={(e) =>
+                  handleChange("fontSize", parseInt(e.target.value, 10))
+                }
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="fontFamily">Font Family</label>
+            </td>
+            <td>
+              <input
+                id="fontFamily"
+                type="text"
+                value={selectedComponent.fontFamily || "Arial, sans-serif"}
+                onChange={(e) => handleChange("fontFamily", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="fontWeight">Font Weight</label>
+            </td>
+            <td>
+              <select
+                id="fontWeight"
+                value={selectedComponent.fontWeight || "normal"}
+                onChange={(e) => handleChange("fontWeight", e.target.value)}
+              >
+                <option value="normal">Normal</option>
+                <option value="bold">Bold</option>
+                <option value="lighter">Light</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="color">Text Color</label>
+            </td>
+            <td>
+              <input
+                id="color"
+                type="color"
+                value={selectedComponent.color || "#000000"}
+                onChange={(e) => handleChange("color", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="background">Background</label>
+            </td>
+            <td>
+              <input
+                id="background"
+                type="color"
+                value={selectedComponent.background || "#ffffff"}
+                onChange={(e) => handleChange("background", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="border">Border</label>
+            </td>
+            <td>
+              <input
+                id="border"
+                type="text"
+                value={selectedComponent.border || "1px solid #ccc"}
+                onChange={(e) => handleChange("border", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="borderRadius">Border Radius</label>
+            </td>
+            <td>
+              <input
+                id="borderRadius"
+                type="text"
+                value={selectedComponent.borderRadius || "4px"}
+                onChange={(e) => handleChange("borderRadius", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="padding">Padding</label>
+            </td>
+            <td>
+              <input
+                id="padding"
+                type="text"
+                value={selectedComponent.padding || "4px"}
+                onChange={(e) => handleChange("padding", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="margin">Margin</label>
+            </td>
+            <td>
+              <input
+                id="margin"
+                type="text"
+                value={selectedComponent.margin || "0px"}
+                onChange={(e) => handleChange("margin", e.target.value)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="boxShadow">Box Shadow</label>
+            </td>
+            <td>
+              <input
+                id="boxShadow"
+                type="text"
+                value={selectedComponent.boxShadow || "none"}
+                onChange={(e) => handleChange("boxShadow", e.target.value)}
+              />
+            </td>
+          </tr>
+          {selectedComponent.type === "toggleButton" && (
+            <tr>
+              <td>
+                <label htmlFor="checked">Checked</label>
+              </td>
+              <td>
+                <input
+                  id="checked"
+                  type="checkbox"
+                  checked={!!selectedComponent.checked}
+                  onChange={(e) => handleChange("checked", e.target.checked)}
+                />
+              </td>
+            </tr>
+          )}
+        </>
+      )}
       {selectedComponent.type === "countdown" && (
         <tr>
           <td>
@@ -307,7 +468,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
       {selectedComponent.type === "signature" && (
         <>
           <tr>
@@ -344,7 +504,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </tr>
         </>
       )}
-
       {selectedComponent.type === "map" && (
         <tr>
           <td>
@@ -361,7 +520,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-
       <tr>
         <td>
           <label htmlFor="color">Color</label>

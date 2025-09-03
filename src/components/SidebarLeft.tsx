@@ -19,6 +19,8 @@ import {
   AiOutlineHourglass,
 } from "react-icons/ai";
 import { BsCheckSquare, BsCheckSquareFill, BsCircle } from "react-icons/bs";
+import { RxButton } from "react-icons/rx";
+import { BsToggleOn } from "react-icons/bs";
 
 interface SidebarLeftProps {
   onAdd: (type: FormComponentType["type"]) => void;
@@ -173,6 +175,19 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onAdd }) => {
       type: "groupbox",
       icon: <AiOutlineFile />,
       category: "Containers",
+    },
+
+    {
+      label: "Button",
+      type: "button",
+      icon: <RxButton />,
+      category: "Button",
+    },
+    {
+      label: "Toggle Button",
+      type: "toggleButton",
+      icon: <BsToggleOn />,
+      category: "Button",
     },
   ];
 

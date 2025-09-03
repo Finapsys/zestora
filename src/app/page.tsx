@@ -93,6 +93,38 @@ const Home: React.FC = () => {
           height: 200,
         };
         break;
+      case "signature":
+        extra = { labelText: "Signature" };
+        break;
+      case "button":
+        extra = {
+          labelText: "Button",
+          width: 120,
+          height: 40,
+          fontSize: 14,
+          fontWeight: "bold",
+          textAlign: "center",
+          color: "#ffffff",
+          background: "#007bff",
+          border: "1px solid #007bff",
+          borderRadius: "4px",
+        };
+        break;
+      case "toggleButton":
+        extra = {
+          labelText: "Toggle",
+          width: 120,
+          height: 40,
+          fontSize: 14,
+          fontWeight: "bold",
+          textAlign: "center",
+          color: "#ffffff",
+          background: "#28a745",
+          border: "1px solid #28a745",
+          borderRadius: "4px",
+          checked: false,
+        };
+        break;
     }
 
     setComponents([...components, { ...base, ...extra }]);

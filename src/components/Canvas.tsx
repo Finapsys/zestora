@@ -130,28 +130,14 @@ const Canvas: React.FC<CanvasProps> = ({
 
       {verticalLine !== null && (
         <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: verticalLine,
-            width: 1,
-            height: "100%",
-            backgroundColor: "red",
-            pointerEvents: "none",
-          }}
+          className={`${styles.alignmentLine} ${styles.verticalLine}`}
+          style={{ "--line-left": `${verticalLine}px` } as React.CSSProperties}
         />
       )}
       {horizontalLine !== null && (
         <div
-          style={{
-            position: "absolute",
-            top: horizontalLine,
-            left: 0,
-            width: "100%",
-            height: 1,
-            backgroundColor: "red",
-            pointerEvents: "none",
-          }}
+          className={`${styles.alignmentLine} ${styles.horizontalLine}`}
+          style={{ "--line-top": `${horizontalLine}px` } as React.CSSProperties}
         />
       )}
     </div>

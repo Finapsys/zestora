@@ -4,3 +4,21 @@
   position: relative;
   background-color: #f9f9f9;
 }
+
+.alignmentLine {
+  position: absolute;
+  background-color: red;
+  pointer-events: none;
+}
+
+.verticalLine {
+  width: 1px;
+  height: 100%;
+  left: var(--line-left);
+}
+
+.horizontalLine {
+  width: 100%;
+  height: 1px;
+  top: var(--line-top);
+}

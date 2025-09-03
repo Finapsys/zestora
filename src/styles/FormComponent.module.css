@@ -1,7 +1,5 @@
 .wrapper {
-  position: absolute;
-  display: flex;
-  align-items: center;
+  position: absolute; /* Already present */
 }
 
 .component {
@@ -12,10 +10,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .selected {
-  border: 2px dashed red;
+  border: 2px dashed #a1a1a1;
+}
+
+.deleteIcon {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  cursor: pointer;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  border: 1px solid #ccc;
+  z-index: 10;
+}
+
+.inputWrapper,
+.labelWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .inputField {
@@ -32,35 +53,4 @@
   font-weight: 500;
   font-size: 16px;
   white-space: nowrap;
-}
-
-.deleteIcon {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  cursor: pointer;
-  background: white;
-  border-radius: 50%;
-  padding: 2px;
-  border: 1px solid #ccc;
-}
-
-.inlineDeleteIcon {
-  margin-left: 8px;
-  cursor: pointer;
-  vertical-align: middle;
-}
-
-.inputWrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-.labelWrapper {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 10px;
-  background-color: transparent;
 }

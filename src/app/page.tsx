@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const [components, setComponents] = useState<FormComponentProps[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const addComponent = (type: "text" | "label") => {
+  const addComponent = (type: FormComponentProps["type"]) => {
     const id = `comp-${Date.now()}`;
     const offset = 10;
     const margin = 10;
@@ -21,9 +21,7 @@ const Home: React.FC = () => {
 
     if (components.length > 0) {
       const last = components[components.length - 1];
-
       const sameRow = Math.abs(last.y - y) < verticalSpacing / 2;
-
       if (sameRow) {
         x = last.x + last.width + margin;
         y = last.y;
@@ -31,6 +29,24 @@ const Home: React.FC = () => {
         y = last.y + last.height + margin;
       }
     }
+
+    const defaultLabelTextMap: Record<string, string> = {
+      label: "Label",
+      heading: "Heading",
+      paragraph: "Paragraph",
+      link: "Link",
+      select: "Select",
+      checkbox: "Checkbox",
+      checkboxList: "Checkbox List",
+      radio: "Radio Button",
+      radioList: "Radio List",
+    };
+
+    const defaultOptionsMap: Record<string, string[]> = {
+      select: ["Option 1", "Option 2"],
+      checkboxList: ["Option 1", "Option 2"],
+      radioList: ["Option 1", "Option 2"],
+    };
 
     setComponents([
       ...components,
@@ -42,8 +58,11 @@ const Home: React.FC = () => {
         width: type === "text" ? 200 : 150,
         height: 50,
         selected: false,
-        placeholder: "",
-        labelText: type === "label" ? "Label" : "",
+        placeholder: type === "text" ? "Enter text" : undefined,
+        labelText: defaultLabelTextMap[type] || "",
+        value: "",
+        options: defaultOptionsMap[type] || undefined,
+        checked: type === "checkbox" || type === "radio" ? false : undefined,
         onSelect: () => {},
         onDelete: () => {},
         onUpdate: () => {},
@@ -55,11 +74,7 @@ const Home: React.FC = () => {
     setComponents((prev) =>
       prev.map((comp) =>
         comp.id === id
-          ? {
-              ...comp,
-              ...data,
-              selected: id === selectedId,
-            }
+          ? { ...comp, ...data, selected: id === selectedId }
           : comp
       )
     );

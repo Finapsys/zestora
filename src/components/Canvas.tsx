@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import FormComponent, { FormComponentProps } from "./FormComponent";
 import styles from "../styles/Canvas.module.css";
 
@@ -12,6 +12,7 @@ interface CanvasProps {
 
 const H_MARGIN = 10;
 const V_MARGIN = 10;
+const ALIGN_THRESHOLD = 5;
 
 const Canvas: React.FC<CanvasProps> = ({
   components,
@@ -21,6 +22,9 @@ const Canvas: React.FC<CanvasProps> = ({
   onDeselect,
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  const [verticalLine, setVerticalLine] = useState<number | null>(null);
+  const [horizontalLine, setHorizontalLine] = useState<number | null>(null);
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === canvasRef.current) onDeselect?.();
@@ -46,8 +50,21 @@ const Canvas: React.FC<CanvasProps> = ({
     let newX = x;
     let newY = y;
 
+    setVerticalLine(null);
+    setHorizontalLine(null);
+
     for (const other of components) {
       if (other.id === id) continue;
+
+      if (Math.abs(newY - other.y) <= ALIGN_THRESHOLD) {
+        newY = other.y;
+        setHorizontalLine(other.y + other.height / 2);
+      }
+
+      if (Math.abs(newX - other.x) <= ALIGN_THRESHOLD) {
+        newX = other.x;
+        setVerticalLine(other.x + other.width / 2);
+      }
 
       if (
         overlaps(
@@ -104,8 +121,39 @@ const Canvas: React.FC<CanvasProps> = ({
               onUpdate(id, data);
             }
           }}
+          onDragStop={() => {
+            setVerticalLine(null);
+            setHorizontalLine(null);
+          }}
         />
       ))}
+
+      {verticalLine !== null && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: verticalLine,
+            width: 1,
+            height: "100%",
+            backgroundColor: "red",
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      {horizontalLine !== null && (
+        <div
+          style={{
+            position: "absolute",
+            top: horizontalLine,
+            left: 0,
+            width: "100%",
+            height: 1,
+            backgroundColor: "red",
+            pointerEvents: "none",
+          }}
+        />
+      )}
     </div>
   );
 };

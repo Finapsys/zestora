@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { ResizableBox } from "react-resizable";
-import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
+import Draggable from "react-draggable";
 import { AiOutlineDelete } from "react-icons/ai";
 import styles from "../styles/FormComponent.module.css";
 
@@ -28,12 +28,11 @@ export interface FormComponentProps {
   padding?: string;
   margin?: string;
   boxShadow?: string;
-
   labelText?: string;
-
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
+  onDragStop?: () => void;
 }
 
 const FormComponent: React.FC<FormComponentProps> = ({
@@ -61,6 +60,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
   onSelect,
   onDelete,
   onUpdate,
+  onDragStop,
 }) => {
   const nodeRef = useRef<HTMLDivElement>(null);
 
@@ -85,8 +85,11 @@ const FormComponent: React.FC<FormComponentProps> = ({
     <Draggable
       nodeRef={nodeRef}
       position={{ x, y }}
-      onStop={(_e, data) => onUpdate(id, { x: data.x, y: data.y })}
       onStart={() => onSelect(id)}
+      onStop={(e, data) => {
+        onUpdate(id, { x: data.x, y: data.y });
+        onDragStop?.();
+      }}
     >
       <div ref={nodeRef} className={styles.wrapper}>
         {type === "text" ? (

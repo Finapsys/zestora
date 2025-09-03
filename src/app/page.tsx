@@ -87,7 +87,7 @@ const Home: React.FC = () => {
         break;
       case "map":
         extra = {
-          src: "https://maps.google.com",
+          src: "20.5937,78.9629",
           labelText: "Map",
           width: 300,
           height: 200,

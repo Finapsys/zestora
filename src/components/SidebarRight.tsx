@@ -309,29 +309,54 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       )}
 
       {selectedComponent.type === "signature" && (
-        <tr>
-          <td colSpan={2}>
-            <em>
-              Signature component has no special inputs other than styling.
-            </em>
-          </td>
-        </tr>
+        <>
+          <tr>
+            <td>
+              <label htmlFor="src">Signature Image</label>
+            </td>
+            <td>
+              <input
+                id="src"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleChange("src", URL.createObjectURL(file));
+                  }
+                }}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="labelText">Alt Text / Label</label>
+            </td>
+            <td>
+              <input
+                id="labelText"
+                type="text"
+                value={selectedComponent.labelText || ""}
+                onChange={(e) => handleChange("labelText", e.target.value)}
+                placeholder="Optional label or alt text"
+              />
+            </td>
+          </tr>
+        </>
       )}
 
       {selectedComponent.type === "map" && (
         <tr>
           <td>
-            <label htmlFor="src">Map Location</label>
+            <label htmlFor="src">Map Coordinates (lat,lng)</label>
           </td>
           <td>
             <input
               id="src"
               type="text"
-              value={
-                selectedComponent.src ||
-                "https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=India"
-              }
+              value={selectedComponent.src || "20.5937,78.9629"}
               onChange={(e) => handleChange("src", e.target.value)}
+              placeholder="Enter coordinates like 20.5937,78.9629"
             />
           </td>
         </tr>

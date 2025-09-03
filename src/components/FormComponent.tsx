@@ -108,10 +108,16 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
 
   React.useEffect(() => {
     if (type !== "countdown") return;
+    setTimeLeft(countdownTime || 60);
+  }, [countdownTime, type]);
+
+  React.useEffect(() => {
+    if (type !== "countdown") return;
     if (timeLeft <= 0) return;
+
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
-  }, [type, timeLeft]);
+  }, [timeLeft, type]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -461,8 +467,10 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
         <div
           style={{
             ...containerStyle,
-            position: "relative",
+            width: "100%",
+            height: "100%",
             overflow: "hidden",
+            position: "relative",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -487,8 +495,27 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
 
     if (type === "signature") {
       return (
-        <div style={containerStyle}>
-          Signature
+        <div
+          style={{
+            ...containerStyle,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontStyle: "italic",
+            color: "#888",
+          }}
+        >
+          {src ? (
+            <Image
+              src={src}
+              alt={labelText || "signature"}
+              width={width || 200}
+              height={height || 100}
+              style={{ objectFit: "contain", width: "100%", height: "100%" }}
+            />
+          ) : (
+            "Signature"
+          )}
           {renderDeleteIcon()}
         </div>
       );
@@ -539,12 +566,12 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
           <ResizableBox
             width={width}
             height={height}
-            axis="x"
-            resizeHandles={["e", "w"]}
-            minConstraints={[50, height]}
-            maxConstraints={[500, height]}
+            axis="both"
+            resizeHandles={["se"]}
+            minConstraints={[150, 100]}
+            maxConstraints={[800, 600]}
             onResizeStop={(_e, data) =>
-              onUpdate(id, { width: data.size.width })
+              onUpdate(id, { width: data.size.width, height: data.size.height })
             }
           >
             <div

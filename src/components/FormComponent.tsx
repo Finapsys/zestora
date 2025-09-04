@@ -66,6 +66,7 @@ export interface FormComponentProps {
   src?: string;
   format12h?: boolean;
   countdownTime?: number;
+  required?: boolean;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
@@ -646,7 +647,7 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
               style={{ position: "relative" }}
             >
               {renderInput()}
-              {selected && type === "countdown" && (
+              {selected && (
                 <AiOutlineDelete
                   size={18}
                   className={styles.deleteIcon}

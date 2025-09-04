@@ -105,6 +105,23 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           />
         </td>
       </tr>
+      <tr>
+        <td>
+          <label htmlFor="required">Required</label>
+        </td>
+        <td>
+          <select
+            id="required"
+            value={selectedComponent.required ? "true" : "false"}
+            onChange={(e) =>
+              handleChange("required", e.target.value === "true")
+            }
+          >
+            <option value="true">True</option>
+            <option value="false">False</option>
+          </select>
+        </td>
+      </tr>
     </>
   );
 

@@ -9,6 +9,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 
 interface SavedForm {
   name: string;
+  category?: string;
   data: FormComponentProps[];
 }
 
@@ -20,6 +21,8 @@ const Home: React.FC = () => {
   const [formName, setFormName] = useState<string>("Untitled Form");
   const [oldFormName, setOldFormName] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   useEffect(() => {
     if (activeTab === "saved") {
@@ -46,6 +49,7 @@ const Home: React.FC = () => {
     setSelectedId(null);
     setFormName(form.name);
     setOldFormName(form.name);
+    setSelectedCategory(form.category || "");
     setIsUpdating(true);
     setActiveTab("builder");
   };
@@ -232,6 +236,10 @@ const Home: React.FC = () => {
                 setOldFormName={setOldFormName}
                 isUpdating={isUpdating}
                 setIsUpdating={setIsUpdating}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                categories={categories}
+                setCategories={setCategories}
               />
             </div>
 

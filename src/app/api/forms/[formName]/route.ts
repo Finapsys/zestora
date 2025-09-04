@@ -35,9 +35,15 @@ export async function POST(
   }
 
   const filePath = path.join(FORMS_DIR, `${formName}.json`);
-  const data = await req.json();
+  const body = await req.json();
 
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+  const formPayload = {
+    name: formName,
+    category: body.category || "",
+    data: body.data || [],
+  };
+
+  fs.writeFileSync(filePath, JSON.stringify(formPayload, null, 2), "utf-8");
   return NextResponse.json({ message: "Form saved successfully" });
 }
 
@@ -62,7 +68,7 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const { newName, data } = body;
+    const { newName, data, category } = body;
 
     let targetFilePath = oldFilePath;
 
@@ -79,7 +85,17 @@ export async function PUT(
       fs.renameSync(oldFilePath, targetFilePath);
     }
 
-    fs.writeFileSync(targetFilePath, JSON.stringify(data, null, 2), "utf-8");
+    const formPayload = {
+      name: newName || formName,
+      category: category || "",
+      data: data || [],
+    };
+
+    fs.writeFileSync(
+      targetFilePath,
+      JSON.stringify(formPayload, null, 2),
+      "utf-8"
+    );
 
     return NextResponse.json({ message: "Form updated successfully" });
   } catch (err) {

@@ -22,8 +22,11 @@ interface CanvasProps {
   setOldFormName: (name: string) => void;
   isUpdating: boolean;
   setIsUpdating: (value: boolean) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
+  categories: string[];
+  setCategories: (categories: string[]) => void;
 }
-
 
 const H_MARGIN = 10;
 const V_MARGIN = 10;
@@ -41,6 +44,10 @@ const Canvas: React.FC<CanvasProps> = ({
   setOldFormName,
   isUpdating,
   setIsUpdating,
+  selectedCategory,
+  setSelectedCategory,
+  categories = [],
+  setCategories,
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [verticalLine, setVerticalLine] = useState<number | null>(null);
@@ -125,6 +132,22 @@ const Canvas: React.FC<CanvasProps> = ({
   const handleFormPreview = () => setIsPreviewOpen(true);
   const handleFormCodePreview = () => setIsCodePreviewOpen(true);
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+
+    if (value === "custom") {
+      const newCat = prompt("Enter a new category name:");
+      if (newCat && newCat.trim() !== "") {
+        if (!categories.includes(newCat)) {
+          setCategories([...categories, newCat]);
+        }
+        setSelectedCategory(newCat);
+      }
+    } else {
+      setSelectedCategory(value);
+    }
+  };
+
   const handleSaveForm = async () => {
     if (!formName) return alert("Enter a form name!");
 
@@ -133,7 +156,11 @@ const Canvas: React.FC<CanvasProps> = ({
         const res = await fetch(`/api/forms/${oldFormName}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ newName: formName, data: components }),
+          body: JSON.stringify({
+            newName: formName,
+            category: selectedCategory,
+            data: components,
+          }),
         });
 
         const data = await res.json();
@@ -148,7 +175,11 @@ const Canvas: React.FC<CanvasProps> = ({
         const res = await fetch(`/api/forms/${formName}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(components),
+          body: JSON.stringify({
+            name: formName,
+            category: selectedCategory,
+            data: components,
+          }),
         });
 
         const data = await res.json();
@@ -167,13 +198,66 @@ const Canvas: React.FC<CanvasProps> = ({
   return (
     <div className={styles.canvasWrapper}>
       <div className={styles.canvasHeader}>
-        <input
-          type="text"
-          value={formName}
-          onChange={(e) => setFormName(e.target.value)}
-          placeholder="Untitled Form"
-          className={styles.formNameInput}
-        />
+        <div className={styles.headerLeft}>
+          <input
+            type="text"
+            value={formName}
+            onChange={(e) => setFormName(e.target.value)}
+            placeholder="Untitled Form"
+            className={styles.formNameInput}
+          />
+
+          <label htmlFor="categorySelect" className={styles.srOnly}>
+            Select Category
+          </label>
+          <select
+            id="categorySelect"
+            className={styles.categorySelect}
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">Select Category</option>
+            <optgroup label="Predefined Categories">
+              <option value="predefined">Predefined Forms</option>
+              <option value="business">Business Operation Forms</option>
+              <option value="ecommerce">E-Commerce & Payment Forms</option>
+              <option value="education">Education Forms</option>
+              <option value="healthcare">Healthcare Forms</option>
+              <option value="it">IT Forms</option>
+              <option value="market">Market & Research Forms</option>
+              <option value="manufacturing">Manufacturing Forms</option>
+              <option value="financial">Financial Forms</option>
+              <option value="real-estate">Real Estate Forms</option>
+              <option value="logistics">Logistics Forms</option>
+              <option value="food">Food & Beverages Forms</option>
+              <option value="media">Media & Entertainment Forms</option>
+              <option value="insurance">Insurance Form</option>
+              <option value="blog">Blog Form</option>
+              <option value="tours">Tours & Travel Forms</option>
+              <option value="tax">Tax Forms</option>
+              <option value="wedding">Wedding Forms</option>
+              <option value="sports">Sports Form</option>
+              <option value="construction">Construction Forms</option>
+              <option value="transportation">Transportation Forms</option>
+            </optgroup>
+
+            {(categories ?? []).length > 0 && (
+              <optgroup label="Custom Categories">
+                {(categories ?? []).map((cat: string) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+
+            <optgroup label="───────────────"></optgroup>
+            <optgroup label="">
+              <option value="custom">➕ Create your own category</option>
+            </optgroup>
+          </select>
+        </div>
+
         <div className={styles.headerButtons}>
           <button type="button" onClick={handleFormPreview}>
             <AiOutlineEye style={{ marginRight: 5 }} />

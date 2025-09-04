@@ -13,11 +13,14 @@ export async function GET() {
   const forms = files
     .filter((f) => f.endsWith(".json"))
     .map((f) => {
-      const name = f.replace(".json", "");
-      const data = JSON.parse(
+      const json = JSON.parse(
         fs.readFileSync(path.join(FORMS_DIR, f), "utf-8")
       );
-      return { name, data };
+      return {
+        name: json.name || f.replace(".json", ""),
+        category: json.category || "",
+        data: json.data || [],
+      };
     });
 
   return NextResponse.json({ forms });

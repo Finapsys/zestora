@@ -1,24 +1,55 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SidebarLeft from "../components/SidebarLeft";
 import SidebarRight from "../components/SidebarRight";
 import Canvas from "../components/Canvas";
 import { FormComponentProps } from "../components/FormComponent";
 import styles from "../styles/Home.module.css";
 
+interface SavedForm {
+  name: string;
+  data: FormComponentProps[];
+}
+
 const Home: React.FC = () => {
   const [components, setComponents] = useState<FormComponentProps[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"builder" | "saved">("builder");
+  const [savedForms, setSavedForms] = useState<SavedForm[]>([]);
+
+  useEffect(() => {
+    if (activeTab === "saved") {
+      fetchSavedForms();
+    }
+  }, [activeTab]);
+
+  const fetchSavedForms = async () => {
+    try {
+      const res = await fetch("/api/forms");
+      if (!res.ok) throw new Error("Failed to fetch saved forms");
+      const data: { forms: SavedForm[] } = await res.json();
+      setSavedForms(data.forms || []);
+    } catch (err) {
+      console.error("Failed to fetch saved forms", err);
+    }
+  };
+
+  const loadForm = (formName: string) => {
+    const form = savedForms.find((f) => f.name === formName);
+    if (!form) return;
+    setComponents(form.data as FormComponentProps[]);
+    setSelectedId(null);
+    setActiveTab("builder");
+  };
+
   const componentCounters: Record<string, number> = {};
 
   const addComponent = (type: FormComponentProps["type"]) => {
     componentCounters[type] = (componentCounters[type] || 0) + 1;
     const id = `${type}-${Date.now()}`;
-
     const offset = 10;
     const margin = 10;
     const verticalSpacing = 60;
-
     let x = offset;
     let y = offset;
 
@@ -47,7 +78,6 @@ const Home: React.FC = () => {
     };
 
     let extra: Partial<FormComponentProps> = {};
-
     switch (type) {
       case "text":
         extra = { placeholder: "Enter text", value: "" };
@@ -154,28 +184,67 @@ const Home: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebarLeft}>
-        <SidebarLeft onAdd={addComponent} />
+      <div className={styles.tabHeader}>
+        <button
+          type="button"
+          className={activeTab === "builder" ? styles.active : ""}
+          onClick={() => setActiveTab("builder")}
+        >
+          Form Builder
+        </button>
+        <button
+          type="button"
+          className={activeTab === "saved" ? styles.active : ""}
+          onClick={() => setActiveTab("saved")}
+        >
+          Saved Forms
+        </button>
       </div>
 
-      <div className={styles.canvas}>
-        <Canvas
-          components={components.map((c) => ({
-            ...c,
-            selected: c.id === selectedId,
-          }))}
-          onSelect={handleSelect}
-          onDelete={deleteComponent}
-          onUpdate={updateComponent}
-          onDeselect={() => setSelectedId(null)}
-        />
-      </div>
+      <div className={styles.tabContent}>
+        {activeTab === "builder" && (
+          <div className={styles.builderContainer}>
+            <div className={styles.sidebarLeft}>
+              <SidebarLeft onAdd={addComponent} />
+            </div>
 
-      <div className={styles.sidebarRight}>
-        <SidebarRight
-          selectedComponent={selectedComponent}
-          onUpdate={updateComponent}
-        />
+            <div className={styles.canvas}>
+              <Canvas
+                components={components.map((c) => ({
+                  ...c,
+                  selected: c.id === selectedId,
+                }))}
+                onSelect={handleSelect}
+                onDelete={deleteComponent}
+                onUpdate={updateComponent}
+                onDeselect={() => setSelectedId(null)}
+              />
+            </div>
+
+            <div className={styles.sidebarRight}>
+              <SidebarRight
+                selectedComponent={selectedComponent}
+                onUpdate={updateComponent}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeTab === "saved" && (
+          <div className={styles.savedForms}>
+            {savedForms.length === 0 && <p>No saved forms available.</p>}
+            <div className={styles.formCards}>
+              {savedForms.map((form) => (
+                <div key={form.name} className={styles.formCard}>
+                  <h3>{form.name}</h3>
+                  <button type="button" onClick={() => loadForm(form.name)}>
+                    Load Form
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

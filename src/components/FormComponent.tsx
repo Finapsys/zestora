@@ -43,6 +43,7 @@ export interface FormComponentProps {
     | "toggleButton";
   x: number;
   y: number;
+  label?: string;
   width: number;
   height: number;
   selected: boolean;
@@ -140,6 +141,7 @@ export interface FormComponentProps {
   pointerEvents?: string;
   userSelect?: string;
   resize?: string;
+  style?: React.CSSProperties;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;

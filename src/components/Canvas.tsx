@@ -6,6 +6,8 @@ import {
   AiOutlineCode,
   AiOutlinePlusCircle,
 } from "react-icons/ai";
+import Modal from "./Modal";
+import CodePreviewModal from "./CodePreviewModal";
 
 interface CanvasProps {
   components: FormComponentProps[];
@@ -30,6 +32,8 @@ const Canvas: React.FC<CanvasProps> = ({
   const [verticalLine, setVerticalLine] = useState<number | null>(null);
   const [horizontalLine, setHorizontalLine] = useState<number | null>(null);
   const [formName, setFormName] = useState<string>("Untitled Form");
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isCodePreviewOpen, setIsCodePreviewOpen] = useState(false);
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === canvasRef.current) onDeselect?.();
@@ -105,26 +109,52 @@ const Canvas: React.FC<CanvasProps> = ({
     onUpdate(id, { x: newX, y: newY });
   };
 
+  const handleFormPreview = () => {
+    setIsPreviewOpen(true);
+  };
+
+  const handleFormCodePreview = () => {
+    setIsCodePreviewOpen(true);
+  };
+
+  const handleCreateForm = async () => {
+    if (!formName) return alert("Enter a form name!");
+
+    try {
+      const res = await fetch(`/api/forms/${formName}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(components),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save form");
+    }
+  };
+
   return (
     <div className={styles.canvasWrapper}>
       <div className={styles.canvasHeader}>
         <input
           type="text"
-          value=""
+          value={formName}
           onChange={(e) => setFormName(e.target.value)}
           placeholder="Untitled Form"
           className={styles.formNameInput}
         />
         <div className={styles.headerButtons}>
-          <button type="button">
+          <button type="button" onClick={handleFormPreview}>
             <AiOutlineEye style={{ marginRight: 5 }} />
             Form Preview
           </button>
-          <button type="button">
+          <button type="button" onClick={handleFormCodePreview}>
             <AiOutlineCode style={{ marginRight: 5 }} />
             Form Code Preview
           </button>
-          <button type="button">
+          <button type="button" onClick={handleCreateForm}>
             <AiOutlinePlusCircle style={{ marginRight: 5 }} />
             Create Form
           </button>
@@ -173,6 +203,40 @@ const Canvas: React.FC<CanvasProps> = ({
           />
         )}
       </div>
+
+      <Modal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        title="Form Preview"
+      >
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "500px",
+            border: "1px solid #ccc",
+            background: "#f9f9f9",
+          }}
+        >
+          {components.map((comp) => (
+            <FormComponent
+              key={comp.id}
+              {...comp}
+              style={{
+                position: "absolute",
+                left: comp.x,
+                top: comp.y,
+              }}
+            />
+          ))}
+        </div>
+      </Modal>
+
+      <CodePreviewModal
+        isOpen={isCodePreviewOpen}
+        onClose={() => setIsCodePreviewOpen(false)}
+        components={components}
+      />
     </div>
   );
 };

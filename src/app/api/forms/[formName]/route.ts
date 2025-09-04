@@ -6,9 +6,9 @@ const FORMS_DIR = path.join(process.cwd(), "public/forms");
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { formName: string } }
+  context: { params: Promise<{ formName: string }> }
 ) {
-  const { formName } = params;
+  const { formName } = await context.params;
 
   if (!fs.existsSync(FORMS_DIR)) {
     fs.mkdirSync(FORMS_DIR, { recursive: true });
@@ -26,9 +26,9 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { formName: string } }
+  context: { params: Promise<{ formName: string }> }
 ) {
-  const { formName } = params;
+  const { formName } = await context.params;
 
   if (!fs.existsSync(FORMS_DIR)) {
     fs.mkdirSync(FORMS_DIR, { recursive: true });
@@ -43,9 +43,9 @@ export async function POST(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { formName: string } }
+  context: { params: Promise<{ formName: string }> }
 ) {
-  const { formName } = params;
+  const { formName } = await context.params;
 
   if (!fs.existsSync(FORMS_DIR)) {
     fs.mkdirSync(FORMS_DIR, { recursive: true });
@@ -93,9 +93,9 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { formName: string } }
+  context: { params: Promise<{ formName: string }> }
 ) {
-  const { formName } = params;
+  const { formName } = await context.params;
 
   const filePath = path.join(FORMS_DIR, `${formName}.json`);
 

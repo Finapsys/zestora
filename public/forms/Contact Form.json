@@ -61,30 +61,10 @@
     "placeholder": "Enter your email"
   },
   {
-    "id": "label-1756979284082",
-    "type": "label",
-    "x": 0,
-    "y": 222,
-    "width": 150,
-    "height": 50,
-    "selected": false,
-    "labelText": "Mobile"
-  },
-  {
-    "id": "mobile-1756979301965",
-    "type": "mobile",
-    "x": 100,
-    "y": 222,
-    "width": 500,
-    "height": 50,
-    "selected": false,
-    "placeholder": "Enter your mobile"
-  },
-  {
     "id": "button-1756979341298",
     "type": "button",
     "x": 475,
-    "y": 280,
+    "y": 220,
     "width": 120,
     "height": 40,
     "selected": false,

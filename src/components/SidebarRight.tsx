@@ -439,6 +439,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {[
         "text",
         "textarea",
@@ -468,6 +469,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {["text", "label", "heading", "paragraph", "link"].includes(
         selectedComponent.type
       ) && (
@@ -538,6 +540,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </tr>
         </>
       )}
+
       {["checkbox", "radio"].includes(selectedComponent.type) && (
         <tr>
           <td>
@@ -553,6 +556,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {["checkboxList", "radioList", "select"].includes(
         selectedComponent.type
       ) && (
@@ -574,6 +578,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {["image", "video"].includes(selectedComponent.type) && (
         <tr>
           <td>
@@ -596,6 +601,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {["button", "toggleButton"].includes(selectedComponent.type) && (
         <>
           <tr>
@@ -655,97 +661,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
               </select>
             </td>
           </tr>
-          <tr>
-            <td>
-              <label htmlFor="color">Text Color</label>
-            </td>
-            <td>
-              <input
-                id="color"
-                type="color"
-                value={selectedComponent.color || "#000000"}
-                onChange={(e) => handleChange("color", e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="background">Background</label>
-            </td>
-            <td>
-              <input
-                id="background"
-                type="color"
-                value={selectedComponent.background || "#ffffff"}
-                onChange={(e) => handleChange("background", e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="border">Border</label>
-            </td>
-            <td>
-              <input
-                id="border"
-                type="text"
-                value={selectedComponent.border || "1px solid #ccc"}
-                onChange={(e) => handleChange("border", e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="borderRadius">Border Radius</label>
-            </td>
-            <td>
-              <input
-                id="borderRadius"
-                type="text"
-                value={selectedComponent.borderRadius || "4px"}
-                onChange={(e) => handleChange("borderRadius", e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="padding">Padding</label>
-            </td>
-            <td>
-              <input
-                id="padding"
-                type="text"
-                value={selectedComponent.padding || "4px"}
-                onChange={(e) => handleChange("padding", e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="margin">Margin</label>
-            </td>
-            <td>
-              <input
-                id="margin"
-                type="text"
-                value={selectedComponent.margin || "0px"}
-                onChange={(e) => handleChange("margin", e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="boxShadow">Box Shadow</label>
-            </td>
-            <td>
-              <input
-                id="boxShadow"
-                type="text"
-                value={selectedComponent.boxShadow || "none"}
-                onChange={(e) => handleChange("boxShadow", e.target.value)}
-              />
-            </td>
-          </tr>
           {selectedComponent.type === "toggleButton" && (
             <tr>
               <td>
@@ -763,6 +678,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           )}
         </>
       )}
+
       {selectedComponent.type === "countdown" && (
         <tr>
           <td>
@@ -780,6 +696,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
+
       {selectedComponent.type === "signature" && (
         <>
           <tr>
@@ -816,6 +733,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </tr>
         </>
       )}
+
       {selectedComponent.type === "map" && (
         <tr>
           <td>
@@ -832,97 +750,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           </td>
         </tr>
       )}
-      <tr>
-        <td>
-          <label htmlFor="color">Color</label>
-        </td>
-        <td>
-          <input
-            id="color"
-            type="color"
-            value={selectedComponent.color || "#000000"}
-            onChange={(e) => handleChange("color", e.target.value)}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label htmlFor="background">Background</label>
-        </td>
-        <td>
-          <input
-            id="background"
-            type="color"
-            value={selectedComponent.background || "#ffffff"}
-            onChange={(e) => handleChange("background", e.target.value)}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label htmlFor="border">Border</label>
-        </td>
-        <td>
-          <input
-            id="border"
-            type="text"
-            value={selectedComponent.border || "1px solid #ccc"}
-            onChange={(e) => handleChange("border", e.target.value)}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label htmlFor="borderRadius">Border Radius</label>
-        </td>
-        <td>
-          <input
-            id="borderRadius"
-            type="text"
-            value={selectedComponent.borderRadius || "4px"}
-            onChange={(e) => handleChange("borderRadius", e.target.value)}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label htmlFor="padding">Padding</label>
-        </td>
-        <td>
-          <input
-            id="padding"
-            type="text"
-            value={selectedComponent.padding || "4px"}
-            onChange={(e) => handleChange("padding", e.target.value)}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label htmlFor="margin">Margin</label>
-        </td>
-        <td>
-          <input
-            id="margin"
-            type="text"
-            value={selectedComponent.margin || "0px"}
-            onChange={(e) => handleChange("margin", e.target.value)}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label htmlFor="boxShadow">Box Shadow</label>
-        </td>
-        <td>
-          <input
-            id="boxShadow"
-            type="text"
-            value={selectedComponent.boxShadow || "none"}
-            onChange={(e) => handleChange("boxShadow", e.target.value)}
-          />
-        </td>
-      </tr>
     </>
   );
 
@@ -930,6 +757,12 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
     <div className={styles.sidebar}>
       <h3>Properties</h3>
       <div className={styles.propertiesContainer}>
+        <fieldset>
+          <legend>Component Specific Properties</legend>
+          <table className={styles.propTable}>
+            <tbody>{styleInputs}</tbody>
+          </table>
+        </fieldset>
         <fieldset>
           <legend>Common</legend>
           <table className={styles.propTable}>
@@ -997,12 +830,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
                 );
               })}
             </tbody>
-          </table>
-        </fieldset>
-        <fieldset>
-          <legend>Component Specific Properties</legend>
-          <table className={styles.propTable}>
-            <tbody>{styleInputs}</tbody>
           </table>
         </fieldset>
       </div>

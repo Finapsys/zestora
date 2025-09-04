@@ -9,9 +9,12 @@ import styles from "../styles/Home.module.css";
 const Home: React.FC = () => {
   const [components, setComponents] = useState<FormComponentProps[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const componentCounters: Record<string, number> = {};
 
   const addComponent = (type: FormComponentProps["type"]) => {
-    const id = `comp-${Date.now()}`;
+    componentCounters[type] = (componentCounters[type] || 0) + 1;
+    const id = `${type}-${Date.now()}`;
+
     const offset = 10;
     const margin = 10;
     const verticalSpacing = 60;

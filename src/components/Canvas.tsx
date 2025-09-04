@@ -9,6 +9,7 @@ import {
 } from "react-icons/ai";
 import Modal from "./Modal";
 import CodePreviewModal from "./CodePreviewModal";
+import PopupModal from "./PopupModal";
 
 interface CanvasProps {
   components: FormComponentProps[];
@@ -54,6 +55,18 @@ const Canvas: React.FC<CanvasProps> = ({
   const [horizontalLine, setHorizontalLine] = useState<number | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isCodePreviewOpen, setIsCodePreviewOpen] = useState(false);
+  const [popup, setPopup] = useState<{
+    open: boolean;
+    title?: string;
+    message?: string;
+    input?: boolean;
+    defaultValue?: string;
+    onConfirm?: (value?: string) => void;
+  }>({ open: false });
+
+  const showPopup = (options: Omit<typeof popup, "open">) =>
+    setPopup({ ...options, open: true });
+
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === canvasRef.current) onDeselect?.();
@@ -136,20 +149,29 @@ const Canvas: React.FC<CanvasProps> = ({
     const value = e.target.value;
 
     if (value === "custom") {
-      const newCat = prompt("Enter a new category name:");
-      if (newCat && newCat.trim() !== "") {
-        if (!categories.includes(newCat)) {
-          setCategories([...categories, newCat]);
-        }
-        setSelectedCategory(newCat);
-      }
+      showPopup({
+        title: "New Category",
+        message: "Enter a new category name:",
+        input: true,
+        onConfirm: (newCat) => {
+          if (newCat && newCat.trim() !== "") {
+            if (!categories.includes(newCat)) {
+              setCategories([...categories, newCat]);
+            }
+            setSelectedCategory(newCat);
+          }
+        },
+      });
     } else {
       setSelectedCategory(value);
     }
   };
 
   const handleSaveForm = async () => {
-    if (!formName) return alert("Enter a form name!");
+    if (!formName) {
+      showPopup({ title: "Error", message: "Enter a form name!" });
+      return;
+    }
 
     try {
       if (isUpdating) {
@@ -166,7 +188,7 @@ const Canvas: React.FC<CanvasProps> = ({
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to update");
 
-        alert(data.message);
+        showPopup({ title: "Success", message: data.message });
 
         if (formName !== oldFormName) {
           setOldFormName(formName);
@@ -185,7 +207,7 @@ const Canvas: React.FC<CanvasProps> = ({
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to save");
 
-        alert(data.message);
+        showPopup({ title: "Success", message: data.message });
         setIsUpdating(true);
         setOldFormName(formName);
       }
@@ -345,6 +367,16 @@ const Canvas: React.FC<CanvasProps> = ({
         isOpen={isCodePreviewOpen}
         onClose={() => setIsCodePreviewOpen(false)}
         components={components}
+      />
+
+      <PopupModal
+        isOpen={popup.open}
+        title={popup.title}
+        message={popup.message}
+        input={popup.input}
+        defaultValue={popup.defaultValue}
+        onClose={() => setPopup({ ...popup, open: false })}
+        onConfirm={(value) => popup.onConfirm?.(value)}
       />
     </div>
   );

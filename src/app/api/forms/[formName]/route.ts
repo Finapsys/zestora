@@ -51,9 +51,9 @@ export async function PUT(
     fs.mkdirSync(FORMS_DIR, { recursive: true });
   }
 
-  const filePath = path.join(FORMS_DIR, `${formName}.json`);
+  const oldFilePath = path.join(FORMS_DIR, `${formName}.json`);
 
-  if (!fs.existsSync(filePath)) {
+  if (!fs.existsSync(oldFilePath)) {
     return NextResponse.json(
       { error: "Form not found. Cannot update non-existing form." },
       { status: 404 }
@@ -61,8 +61,26 @@ export async function PUT(
   }
 
   try {
-    const data = await req.json();
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+    const body = await req.json();
+    const { newName, data } = body;
+
+    let targetFilePath = oldFilePath;
+
+    if (newName && newName !== formName) {
+      targetFilePath = path.join(FORMS_DIR, `${newName}.json`);
+
+      if (fs.existsSync(targetFilePath)) {
+        return NextResponse.json(
+          { error: "A form with the new name already exists." },
+          { status: 400 }
+        );
+      }
+
+      fs.renameSync(oldFilePath, targetFilePath);
+    }
+
+    fs.writeFileSync(targetFilePath, JSON.stringify(data, null, 2), "utf-8");
+
     return NextResponse.json({ message: "Form updated successfully" });
   } catch (err) {
     console.error(err);

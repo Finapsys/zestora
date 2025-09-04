@@ -18,6 +18,7 @@ const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"builder" | "saved">("builder");
   const [savedForms, setSavedForms] = useState<SavedForm[]>([]);
   const [formName, setFormName] = useState<string>("Untitled Form");
+  const [oldFormName, setOldFormName] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const Home: React.FC = () => {
     setComponents(form.data as FormComponentProps[]);
     setSelectedId(null);
     setFormName(form.name);
+    setOldFormName(form.name);
     setIsUpdating(true);
     setActiveTab("builder");
   };
@@ -226,6 +228,8 @@ const Home: React.FC = () => {
                 onDeselect={() => setSelectedId(null)}
                 formName={formName}
                 setFormName={setFormName}
+                oldFormName={oldFormName}
+                setOldFormName={setOldFormName}
                 isUpdating={isUpdating}
                 setIsUpdating={setIsUpdating}
               />

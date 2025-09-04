@@ -18,9 +18,12 @@ interface CanvasProps {
   onDeselect?: () => void;
   formName: string;
   setFormName: (name: string) => void;
+  oldFormName: string | null;
+  setOldFormName: (name: string) => void;
   isUpdating: boolean;
   setIsUpdating: (value: boolean) => void;
 }
+
 
 const H_MARGIN = 10;
 const V_MARGIN = 10;
@@ -34,6 +37,8 @@ const Canvas: React.FC<CanvasProps> = ({
   onDeselect,
   formName,
   setFormName,
+  oldFormName,
+  setOldFormName,
   isUpdating,
   setIsUpdating,
 }) => {
@@ -124,17 +129,35 @@ const Canvas: React.FC<CanvasProps> = ({
     if (!formName) return alert("Enter a form name!");
 
     try {
-      const method = isUpdating ? "PUT" : "POST";
-      const res = await fetch(`/api/forms/${formName}`, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(components),
-      });
+      if (isUpdating) {
+        const res = await fetch(`/api/forms/${oldFormName}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newName: formName, data: components }),
+        });
 
-      const data = await res.json();
-      alert(data.message);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to update");
 
-      if (!isUpdating) setIsUpdating(true);
+        alert(data.message);
+
+        if (formName !== oldFormName) {
+          setOldFormName(formName);
+        }
+      } else {
+        const res = await fetch(`/api/forms/${formName}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(components),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to save");
+
+        alert(data.message);
+        setIsUpdating(true);
+        setOldFormName(formName);
+      }
     } catch (err) {
       console.error(err);
       alert(`Failed to ${isUpdating ? "update" : "create"} form`);

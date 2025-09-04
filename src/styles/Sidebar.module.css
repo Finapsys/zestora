@@ -109,6 +109,12 @@
   padding: 0 6px;
 }
 
+.propertiesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .propTable {
   width: 100%;
   border-collapse: collapse;

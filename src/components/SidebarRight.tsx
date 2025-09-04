@@ -31,7 +31,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       options?: string[];
     }
   > = {
-    // Layout & Sizing
     maxWidth: { label: "Max Width", type: "text" },
     minWidth: { label: "Min Width", type: "text" },
     maxHeight: { label: "Max Height", type: "text" },
@@ -81,15 +80,11 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       type: "select",
       options: ["visible", "hidden", "collapse"],
     },
-
-    // Spacing
     margin: { label: "Margin", type: "text" },
     padding: { label: "Padding", type: "text" },
     gap: { label: "Gap", type: "text" },
     rowGap: { label: "Row Gap", type: "text" },
     columnGap: { label: "Column Gap", type: "text" },
-
-    // Border
     border: { label: "Border", type: "text" },
     borderWidth: { label: "Border Width", type: "text" },
     borderStyle: {
@@ -115,8 +110,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       options: ["separate", "collapse"],
     },
     borderSpacing: { label: "Border Spacing", type: "text" },
-
-    // Background
     background: { label: "Background", type: "text" },
     backgroundColor: { label: "Background Color", type: "color" },
     backgroundImage: { label: "Background Image", type: "text" },
@@ -136,8 +129,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       type: "select",
       options: ["scroll", "fixed", "local"],
     },
-
-    // Typography
     color: { label: "Text Color", type: "color" },
     opacity: { label: "Opacity", type: "number" },
     font: { label: "Font", type: "text" },
@@ -195,8 +186,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       type: "select",
       options: ["normal", "nowrap", "pre", "pre-wrap", "pre-line"],
     },
-
-    // Flexbox
     flexDirection: {
       label: "Flex Direction",
       type: "select",
@@ -236,14 +225,10 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         "space-around",
       ],
     },
-
-    // Grid
     gridTemplateRows: { label: "Grid Template Rows", type: "text" },
     gridTemplateColumns: { label: "Grid Template Columns", type: "text" },
     gridArea: { label: "Grid Area", type: "text" },
     gridGap: { label: "Grid Gap", type: "text" },
-
-    // Table
     captionSide: {
       label: "Caption Side",
       type: "select",
@@ -259,8 +244,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       type: "select",
       options: ["auto", "fixed"],
     },
-
-    // Transition & Animation
     transition: { label: "Transition", type: "text" },
     transitionProperty: { label: "Transition Property", type: "text" },
     transitionDuration: { label: "Transition Duration", type: "text" },
@@ -285,8 +268,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       type: "select",
       options: ["normal", "reverse", "alternate", "alternate-reverse"],
     },
-
-    // Transform & Effects
     transform: { label: "Transform", type: "text" },
     transformOrigin: { label: "Transform Origin", type: "text" },
     boxShadow: { label: "Box Shadow", type: "text" },
@@ -305,8 +286,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         "color-burn",
       ],
     },
-
-    // Interactivity
     cursor: {
       label: "Cursor",
       type: "select",
@@ -950,75 +929,83 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
   return (
     <div className={styles.sidebar}>
       <h3>Properties</h3>
-      <fieldset>
-        <legend>Common</legend>
-        <table className={styles.propTable}>
-          <tbody>{commonInputs}</tbody>
-        </table>
-      </fieldset>
-      <fieldset>
-        <legend>CSS Properties</legend>
-        <table className={styles.propTable}>
-          <tbody>
-            {Object.entries(cssProperties).map(([prop, config]) => {
-              const rawValue =
-                selectedComponent[prop as keyof FormComponentProps];
-              const value: string | number | readonly string[] | undefined =
-                rawValue === undefined || rawValue === null
-                  ? ""
-                  : typeof rawValue === "boolean"
-                  ? rawValue
-                    ? "true"
-                    : "false"
-                  : typeof rawValue === "number"
-                  ? rawValue
-                  : String(rawValue);
+      <div className={styles.propertiesContainer}>
+        <fieldset>
+          <legend>Common</legend>
+          <table className={styles.propTable}>
+            <tbody>{commonInputs}</tbody>
+          </table>
+        </fieldset>
+        <fieldset>
+          <legend>CSS Properties</legend>
+          <table className={styles.propTable}>
+            <tbody>
+              {Object.entries(cssProperties).map(([prop, config]) => {
+                const rawValue =
+                  selectedComponent[prop as keyof FormComponentProps];
+                const value: string | number | readonly string[] | undefined =
+                  rawValue === undefined || rawValue === null
+                    ? ""
+                    : typeof rawValue === "boolean"
+                    ? rawValue
+                      ? "true"
+                      : "false"
+                    : typeof rawValue === "number"
+                    ? rawValue
+                    : String(rawValue);
 
-              return (
-                <tr key={prop}>
-                  <td>
-                    <label htmlFor={prop}>{config.label}</label>
-                  </td>
-                  <td>
-                    {config.type === "select" ? (
-                      <select
-                        id={prop}
-                        value={value}
-                        onChange={(e) =>
-                          handleChange(
-                            prop as keyof FormComponentProps,
-                            e.target.value
-                          )
-                        }
-                      >
-                        {config.options?.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        id={prop}
-                        type={config.type}
-                        value={value}
-                        onChange={(e) =>
-                          handleChange(
-                            prop as keyof FormComponentProps,
-                            config.type === "number"
-                              ? parseInt(e.target.value, 10)
-                              : e.target.value
-                          )
-                        }
-                      />
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </fieldset>
+                return (
+                  <tr key={prop}>
+                    <td>
+                      <label htmlFor={prop}>{config.label}</label>
+                    </td>
+                    <td>
+                      {config.type === "select" ? (
+                        <select
+                          id={prop}
+                          value={value}
+                          onChange={(e) =>
+                            handleChange(
+                              prop as keyof FormComponentProps,
+                              e.target.value
+                            )
+                          }
+                        >
+                          {config.options?.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          id={prop}
+                          type={config.type}
+                          value={value}
+                          onChange={(e) =>
+                            handleChange(
+                              prop as keyof FormComponentProps,
+                              config.type === "number"
+                                ? parseInt(e.target.value, 10)
+                                : e.target.value
+                            )
+                          }
+                        />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </fieldset>
+        <fieldset>
+          <legend>Component Specific Properties</legend>
+          <table className={styles.propTable}>
+            <tbody>{styleInputs}</tbody>
+          </table>
+        </fieldset>
+      </div>
     </div>
   );
 };

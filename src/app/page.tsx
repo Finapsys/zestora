@@ -5,6 +5,7 @@ import SidebarRight from "../components/SidebarRight";
 import Canvas from "../components/Canvas";
 import { FormComponentProps } from "../components/FormComponent";
 import styles from "../styles/Home.module.css";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 interface SavedForm {
   name: string;
@@ -16,6 +17,8 @@ const Home: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"builder" | "saved">("builder");
   const [savedForms, setSavedForms] = useState<SavedForm[]>([]);
+  const [formName, setFormName] = useState<string>("Untitled Form");
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   useEffect(() => {
     if (activeTab === "saved") {
@@ -34,11 +37,14 @@ const Home: React.FC = () => {
     }
   };
 
-  const loadForm = (formName: string) => {
-    const form = savedForms.find((f) => f.name === formName);
+  const loadForm = (selectedFormName: string) => {
+    const form = savedForms.find((f) => f.name === selectedFormName);
     if (!form) return;
+
     setComponents(form.data as FormComponentProps[]);
     setSelectedId(null);
+    setFormName(form.name);
+    setIsUpdating(true);
     setActiveTab("builder");
   };
 
@@ -137,7 +143,7 @@ const Home: React.FC = () => {
           fontSize: 14,
           fontWeight: "bold",
           textAlign: "center",
-          color: "#ffffff",
+          color: "#fff",
           background: "#007bff",
           border: "1px solid #007bff",
           borderRadius: "4px",
@@ -151,7 +157,7 @@ const Home: React.FC = () => {
           fontSize: 14,
           fontWeight: "bold",
           textAlign: "center",
-          color: "#ffffff",
+          color: "#fff",
           background: "#28a745",
           border: "1px solid #28a745",
           borderRadius: "4px",
@@ -218,6 +224,10 @@ const Home: React.FC = () => {
                 onDelete={deleteComponent}
                 onUpdate={updateComponent}
                 onDeselect={() => setSelectedId(null)}
+                formName={formName}
+                setFormName={setFormName}
+                isUpdating={isUpdating}
+                setIsUpdating={setIsUpdating}
               />
             </div>
 
@@ -236,8 +246,41 @@ const Home: React.FC = () => {
             <div className={styles.formCards}>
               {savedForms.map((form) => (
                 <div key={form.name} className={styles.formCard}>
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    aria-label={`Delete form ${form.name}`}
+                    onClick={async () => {
+                      if (
+                        !confirm(
+                          `Are you sure you want to delete "${form.name}"?`
+                        )
+                      )
+                        return;
+                      try {
+                        const res = await fetch(`/api/forms/${form.name}`, {
+                          method: "DELETE",
+                        });
+                        const data = await res.json();
+                        alert(data.message);
+                        setSavedForms((prev) =>
+                          prev.filter((f) => f.name !== form.name)
+                        );
+                      } catch (err) {
+                        console.error(err);
+                        alert("Failed to delete form");
+                      }
+                    }}
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+
                   <h3>{form.name}</h3>
-                  <button type="button" onClick={() => loadForm(form.name)}>
+                  <button
+                    type="button"
+                    className={styles.loadButton}
+                    onClick={() => loadForm(form.name)}
+                  >
                     Load Form
                   </button>
                 </div>

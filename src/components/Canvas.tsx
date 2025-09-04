@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useState } from "react";
 import FormComponent, { FormComponentProps } from "./FormComponent";
 import styles from "../styles/Canvas.module.css";
@@ -15,6 +16,10 @@ interface CanvasProps {
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: Partial<FormComponentProps>) => void;
   onDeselect?: () => void;
+  formName: string;
+  setFormName: (name: string) => void;
+  isUpdating: boolean;
+  setIsUpdating: (value: boolean) => void;
 }
 
 const H_MARGIN = 10;
@@ -27,11 +32,14 @@ const Canvas: React.FC<CanvasProps> = ({
   onDelete,
   onUpdate,
   onDeselect,
+  formName,
+  setFormName,
+  isUpdating,
+  setIsUpdating,
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [verticalLine, setVerticalLine] = useState<number | null>(null);
   const [horizontalLine, setHorizontalLine] = useState<number | null>(null);
-  const [formName, setFormName] = useState<string>("Untitled Form");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isCodePreviewOpen, setIsCodePreviewOpen] = useState(false);
 
@@ -109,29 +117,27 @@ const Canvas: React.FC<CanvasProps> = ({
     onUpdate(id, { x: newX, y: newY });
   };
 
-  const handleFormPreview = () => {
-    setIsPreviewOpen(true);
-  };
+  const handleFormPreview = () => setIsPreviewOpen(true);
+  const handleFormCodePreview = () => setIsCodePreviewOpen(true);
 
-  const handleFormCodePreview = () => {
-    setIsCodePreviewOpen(true);
-  };
-
-  const handleCreateForm = async () => {
+  const handleSaveForm = async () => {
     if (!formName) return alert("Enter a form name!");
 
     try {
+      const method = isUpdating ? "PUT" : "POST";
       const res = await fetch(`/api/forms/${formName}`, {
-        method: "POST",
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(components),
       });
 
       const data = await res.json();
       alert(data.message);
+
+      if (!isUpdating) setIsUpdating(true);
     } catch (err) {
       console.error(err);
-      alert("Failed to save form");
+      alert(`Failed to ${isUpdating ? "update" : "create"} form`);
     }
   };
 
@@ -154,9 +160,9 @@ const Canvas: React.FC<CanvasProps> = ({
             <AiOutlineCode style={{ marginRight: 5 }} />
             Form Code Preview
           </button>
-          <button type="button" onClick={handleCreateForm}>
+          <button type="button" onClick={handleSaveForm}>
             <AiOutlinePlusCircle style={{ marginRight: 5 }} />
-            Create Form
+            {isUpdating ? "Update Form" : "Create Form"}
           </button>
         </div>
       </div>
@@ -222,11 +228,7 @@ const Canvas: React.FC<CanvasProps> = ({
             <FormComponent
               key={comp.id}
               {...comp}
-              style={{
-                position: "absolute",
-                left: comp.x,
-                top: comp.y,
-              }}
+              style={{ position: "absolute", left: comp.x, top: comp.y }}
             />
           ))}
         </div>

@@ -474,18 +474,50 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
           : undefined,
       backgroundColor:
         type === "div" || type === "groupbox" ? "#f5f5f5" : undefined,
-      ...(["label", "heading", "paragraph", "link", "signature"].includes(type)
+      ...(["label", "heading", "paragraph", "signature"].includes(type)
         ? sharedStyle
         : {}),
     };
 
-    if (["label", "heading", "paragraph", "link"].includes(type)) {
+    if (["label", "heading", "paragraph"].includes(type)) {
       const Tag =
         type === "heading" ? "h3" : type === "paragraph" ? "p" : "span";
       return (
         <div style={containerStyle}>
           <Tag style={sharedStyle}>{labelText || type}</Tag>
           {renderDeleteIcon()}
+        </div>
+      );
+    }
+
+    if (type === "link") {
+      return (
+        <div style={containerStyle}>
+          <a
+            href={value || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...sharedStyle,
+              textDecoration: "underline",
+              color: color || "#007bff",
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            {labelText || value || "Link"}
+          </a>
+          {selected && (
+            <AiOutlineDelete
+              size={18}
+              className={styles.deleteIcon}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
+            />
+          )}
         </div>
       );
     }

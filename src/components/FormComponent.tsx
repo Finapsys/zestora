@@ -367,6 +367,12 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     boxSizing: "border-box",
   };
 
+  const layoutStyle: React.CSSProperties = {
+    display: "inline-block",
+    width,
+    height,
+  };
+
   const renderInput = () => {
     if (type === "textarea") {
       return (
@@ -780,32 +786,41 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
 
     if (type === "button") {
       return (
-        <button
+        <div
+          style={{
+            position: "relative",
+            width,
+            height,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "transparent",
+            backgroundColor: "transparent",
+          }}
           onClick={(e) => {
             e.stopPropagation();
             onSelect(id);
           }}
-          style={{
-            ...sharedStyle,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            background: "transparent",
-          }}
         >
-          {labelText || "Button"}
-          {selected && (
-            <AiOutlineDelete
-              size={18}
-              className={styles.deleteIcon}
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(id);
-              }}
-            />
-          )}
-        </button>
+          <button
+            style={{
+              fontSize: fontSize ? `${fontSize}px` : "14px",
+              fontFamily,
+              fontWeight,
+              color: color || "#fff",
+              backgroundColor: backgroundColor || "#007bff",
+              border,
+              borderRadius,
+              padding: padding || "8px 16px",
+              cursor: "pointer",
+              width: "auto",
+              height: "auto",
+            }}
+          >
+            {labelText || "Button"}
+          </button>
+          {renderDeleteIcon()}
+        </div>
       );
     }
 
@@ -918,7 +933,11 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
               selected ? styles.selected : ""
             } ${styles.labelWrapper}`}
             onClick={() => onSelect(id)}
-            style={{ ...sharedStyle, display: "inline-block", width, height }}
+            style={{
+              ...(type === "button"
+                ? layoutStyle
+                : { ...sharedStyle, ...layoutStyle }),
+            }}
           >
             {renderContent()}
           </div>

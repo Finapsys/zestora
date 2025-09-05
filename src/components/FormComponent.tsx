@@ -605,6 +605,16 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
         <AiOutlineDelete
           size={18}
           className={styles.deleteIcon}
+          style={{
+            position: "absolute",
+            top: 4,
+            right: 4,
+            zIndex: 9999,
+            background: "#fff",
+            borderRadius: "50%",
+            padding: 2,
+            cursor: "pointer",
+          }}
           onClick={(e) => {
             e.stopPropagation();
             onDelete(id);
@@ -828,22 +838,38 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
       return (
         <div
           style={{
-            ...sharedStyle,
+            position: "relative",
+            width,
+            height,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            background: "transparent",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(id);
           }}
         >
           <ToggleRequired
             checked={!!checked}
             onChange={(newChecked) => onUpdate(id, { checked: newChecked })}
           />
+
           {selected && (
             <AiOutlineDelete
               size={18}
-              className={styles.deleteIcon}
+              color="#000"
+              style={{
+                position: "absolute",
+                top: -10,
+                right: -10,
+                zIndex: 9999,
+                background: "transparent",
+                borderRadius: "50%",
+                cursor: "pointer",
+                padding: 0,
+              }}
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete(id);

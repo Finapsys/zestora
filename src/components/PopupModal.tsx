@@ -1,4 +1,3 @@
-// components/PopupModal.tsx
 "use client";
 import React from "react";
 import styles from "../styles/PopupModal.module.css";
@@ -7,7 +6,7 @@ interface PopupModalProps {
   isOpen: boolean;
   title?: string;
   message?: string;
-  input?: boolean; // true = show input field (replacement for prompt)
+  input?: boolean;
   defaultValue?: string;
   onClose: () => void;
   onConfirm: (value?: string) => void;
@@ -47,10 +46,11 @@ const PopupModal: React.FC<PopupModalProps> = ({
         )}
 
         <div className={styles.actions}>
-          <button onClick={onClose} className={styles.cancel}>
+          <button type="button" onClick={onClose} className={styles.cancel}>
             Cancel
           </button>
           <button
+            type="button"
             onClick={() => {
               onConfirm(value);
               onClose();

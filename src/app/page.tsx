@@ -6,6 +6,7 @@ import Canvas from "../components/Canvas";
 import { FormComponentProps } from "../components/FormComponent";
 import styles from "../styles/Home.module.css";
 import { FaRegTrashAlt } from "react-icons/fa";
+import PopupModal from "../components/PopupModal";
 
 interface SavedForm {
   name: string;
@@ -23,6 +24,13 @@ const Home: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalTitle, setModalTitle] = React.useState<string | undefined>();
+  const [modalMessage, setModalMessage] = React.useState<string | undefined>();
+  const [isConfirm, setIsConfirm] = React.useState(false);
+  const [pendingAction, setPendingAction] = React.useState<(() => void) | null>(
+    null
+  );
 
   useEffect(() => {
     if (activeTab === "saved") {
@@ -262,26 +270,35 @@ const Home: React.FC = () => {
                     type="button"
                     className={styles.deleteButton}
                     aria-label={`Delete form ${form.name}`}
-                    onClick={async () => {
-                      if (
-                        !confirm(
-                          `Are you sure you want to delete "${form.name}"?`
-                        )
-                      )
-                        return;
-                      try {
-                        const res = await fetch(`/api/forms/${form.name}`, {
-                          method: "DELETE",
-                        });
-                        const data = await res.json();
-                        alert(data.message);
-                        setSavedForms((prev) =>
-                          prev.filter((f) => f.name !== form.name)
-                        );
-                      } catch (err) {
-                        console.error(err);
-                        alert("Failed to delete form");
-                      }
+                    onClick={() => {
+                      setModalTitle("Confirm Delete");
+                      setModalMessage(
+                        `Are you sure you want to delete "${form.name}"?`
+                      );
+                      setIsConfirm(true);
+                      setPendingAction(() => async () => {
+                        try {
+                          const res = await fetch(`/api/forms/${form.name}`, {
+                            method: "DELETE",
+                          });
+                          const data = await res.json();
+                          setModalTitle("Deleted");
+                          setModalMessage(data.message);
+                          setIsConfirm(false);
+                          setModalOpen(true);
+
+                          setSavedForms((prev) =>
+                            prev.filter((f) => f.name !== form.name)
+                          );
+                        } catch (err) {
+                          console.error(err);
+                          setModalTitle("Error");
+                          setModalMessage("Failed to delete form");
+                          setIsConfirm(false);
+                          setModalOpen(true);
+                        }
+                      });
+                      setModalOpen(true);
                     }}
                   >
                     <FaRegTrashAlt />
@@ -301,6 +318,20 @@ const Home: React.FC = () => {
           </div>
         )}
       </div>
+
+      <PopupModal
+        isOpen={modalOpen}
+        title={modalTitle}
+        message={modalMessage}
+        input={false}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          if (isConfirm && pendingAction) {
+            pendingAction();
+          }
+          setModalOpen(false);
+        }}
+      />
     </div>
   );
 };

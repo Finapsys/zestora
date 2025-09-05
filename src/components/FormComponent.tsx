@@ -8,6 +8,7 @@ import Image from "next/image";
 import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import ToggleRequired from "./ToggleRequired";
+import type { CSSProperties } from "react";
 
 const MapLeaflet = dynamic(() => import("./MapLeaflet"), { ssr: false });
 
@@ -73,25 +74,25 @@ export interface FormComponentProps {
   maxHeight?: string;
   minHeight?: string;
   display?: string;
-  position?: string;
+  position?: CSSProperties["position"];
   top?: string;
   right?: string;
   bottom?: string;
   left?: string;
   zIndex?: number;
-  float?: string;
-  clear?: string;
+  float?: CSSProperties["float"];
+  clear?: CSSProperties["clear"];
   overflow?: string;
-  overflowX?: string;
-  overflowY?: string;
-  visibility?: string;
+  overflowX?: CSSProperties["overflowX"];
+  overflowY?: CSSProperties["overflowY"];
+  visibility?: CSSProperties["visibility"];
   gap?: string;
   rowGap?: string;
   columnGap?: string;
   borderWidth?: string;
   borderStyle?: string;
   borderColor?: string;
-  borderCollapse?: string;
+  borderCollapse?: CSSProperties["borderCollapse"];
   borderSpacing?: string;
   backgroundColor?: string;
   backgroundImage?: string;
@@ -107,11 +108,11 @@ export interface FormComponentProps {
   letterSpacing?: string;
   wordSpacing?: string;
   textDecoration?: string;
-  textTransform?: string;
+  textTransform?: CSSProperties["textTransform"];
   textShadow?: string;
   whiteSpace?: string;
-  flexDirection?: string;
-  flexWrap?: string;
+  flexDirection?: CSSProperties["flexDirection"];
+  flexWrap?: CSSProperties["flexWrap"];
   justifyContent?: string;
   alignItems?: string;
   alignContent?: string;
@@ -119,9 +120,9 @@ export interface FormComponentProps {
   gridTemplateColumns?: string;
   gridArea?: string;
   gridGap?: string;
-  captionSide?: string;
-  emptyCells?: string;
-  tableLayout?: string;
+  captionSide?: CSSProperties["captionSide"];
+  emptyCells?: CSSProperties["emptyCells"];
+  tableLayout?: CSSProperties["tableLayout"];
   transition?: string;
   transitionProperty?: string;
   transitionDuration?: string;
@@ -136,11 +137,11 @@ export interface FormComponentProps {
   transform?: string;
   transformOrigin?: string;
   filter?: string;
-  mixBlendMode?: string;
+  mixBlendMode?: CSSProperties["mixBlendMode"];
   cursor?: string;
-  pointerEvents?: string;
-  userSelect?: string;
-  resize?: string;
+  pointerEvents?: CSSProperties["pointerEvents"];
+  userSelect?: CSSProperties["userSelect"];
+  resize?: CSSProperties["resize"];
   style?: React.CSSProperties;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
@@ -167,12 +168,85 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     fontWeight,
     textAlign,
     color,
+    font,
+    fontStyle,
+    fontVariant,
+    lineHeight,
+    letterSpacing,
+    wordSpacing,
+    textDecoration,
+    textTransform,
+    textShadow,
+    whiteSpace,
     background,
+    backgroundColor,
+    backgroundImage,
+    backgroundRepeat,
+    backgroundPosition,
+    backgroundSize,
+    backgroundAttachment,
     border,
+    borderWidth,
+    borderStyle,
+    borderColor,
     borderRadius,
+    borderCollapse,
+    borderSpacing,
     padding,
     margin,
     boxShadow,
+    opacity,
+    maxWidth,
+    minWidth,
+    maxHeight,
+    minHeight,
+    display,
+    position,
+    top,
+    right,
+    bottom,
+    left,
+    zIndex,
+    float,
+    clear,
+    overflow,
+    overflowX,
+    overflowY,
+    visibility,
+    gap,
+    rowGap,
+    columnGap,
+    flexDirection,
+    flexWrap,
+    justifyContent,
+    alignItems,
+    alignContent,
+    gridTemplateRows,
+    gridTemplateColumns,
+    gridArea,
+    gridGap,
+    captionSide,
+    emptyCells,
+    tableLayout,
+    transition,
+    transitionProperty,
+    transitionDuration,
+    transitionTimingFunction,
+    animation,
+    animationName,
+    animationDuration,
+    animationTimingFunction,
+    animationDelay,
+    animationIterationCount,
+    animationDirection,
+    transform,
+    transformOrigin,
+    filter,
+    mixBlendMode,
+    cursor,
+    pointerEvents,
+    userSelect,
+    resize,
     src,
     countdownTime,
     onSelect,
@@ -211,13 +285,85 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
     textAlign,
     color,
     background,
+    backgroundColor,
+    backgroundImage,
+    backgroundRepeat,
+    backgroundPosition,
+    backgroundSize,
+    backgroundAttachment,
     border,
+    borderWidth,
+    borderStyle,
+    borderColor,
     borderRadius,
+    borderCollapse,
+    borderSpacing,
     padding,
     margin,
     boxShadow,
+    opacity,
+    font,
+    fontStyle,
+    fontVariant,
+    lineHeight,
+    letterSpacing,
+    wordSpacing,
+    textDecoration,
+    textTransform,
+    textShadow,
+    whiteSpace,
+    flexDirection,
+    flexWrap,
+    justifyContent,
+    alignItems,
+    alignContent,
+    gridTemplateRows,
+    gridTemplateColumns,
+    gridArea,
+    gridGap,
+    rowGap,
+    columnGap,
+    captionSide,
+    emptyCells,
+    tableLayout,
+    transition,
+    transitionProperty,
+    transitionDuration,
+    transitionTimingFunction,
+    animation,
+    animationName,
+    animationDuration,
+    animationTimingFunction,
+    animationDelay,
+    animationIterationCount,
+    animationDirection,
+    transform,
+    transformOrigin,
+    filter,
+    mixBlendMode,
+    cursor,
+    pointerEvents,
+    userSelect,
+    resize,
+    display,
+    position,
+    top,
+    right,
+    bottom,
+    left,
+    zIndex,
+    float,
+    clear,
+    overflow,
+    overflowX,
+    overflowY,
+    visibility,
     width: "100%",
     height: "100%",
+    maxWidth,
+    minWidth,
+    maxHeight,
+    minHeight,
     boxSizing: "border-box",
   };
 
@@ -562,7 +708,7 @@ const FormComponent: React.FC<FormComponentProps> = (props) => {
         </div>
       );
     }
-    
+
     if (type === "map") {
       const defaultCoords: [number, number] = [20.5937, 78.9629];
       const coords: [number, number] = src
